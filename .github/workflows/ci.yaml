@@ -252,7 +252,7 @@ jobs:
     if: always()
 
     permissions:
-      content: write # to push to github-pages
+      contents: write # to push to github-pages
     
     steps:
       - name: Checkout
@@ -340,7 +340,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-        fetch-depth: 0
+          fetch-depth: 0
 
       - name: Bump version and push tag
         id: tagger
