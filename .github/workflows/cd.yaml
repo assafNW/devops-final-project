@@ -193,7 +193,7 @@ jobs:
           password: ${{ secrets.SMTP_PASSWORD }}
           to: ${{ secrets.NOTIFY_EMAIL }}
           from: "CD Pipeline <${{ secrets.SMTP_USERNAME }}>"
-          subject: "CD FAILED - ${{ github.repository }} - run #${{ github.run_number }}
+          subject: "CD FAILED - ${{ github.repository }} - run #${{ github.run_number }}"
           body: |
             CD pipeline failed on ${{ github.repository }}.
 
