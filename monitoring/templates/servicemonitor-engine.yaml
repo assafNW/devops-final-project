@@ -1,0 +1,24 @@
+# ServiceMonitor scrapes the CLI container.
+# CLI container uses ttyd, which does not expose /metrics natively,
+# This monitor basic up/down via blackbox exporter pattern.
+
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata: 
+  name: seyoawe-engine
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: seyoawe-engine
+    release: {{ .Release.Name }}
+spec:
+  selector: 
+    matchLabels:
+      app: seyoawe-engine
+  namespaceSelector:
+    matchNames:
+      - seyoawe
+  endpoints:
+    - port: http
+      path: /health
+      interval: 30s
+      scrapeTimeout: 10s

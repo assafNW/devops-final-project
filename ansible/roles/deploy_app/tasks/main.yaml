@@ -1,0 +1,76 @@
+# Deploys the seyoawe app helm chart to EKS - engine + cli
+# Run eks_auth and dockerhub_secret roles before this role.
+---
+
+- name: Run helm dependency update
+  command: helm dependency update {{ app_chart_path }}
+  changed_when: true
+
+- name: Deploy seyoawe chart 
+  command: >
+    helm upgrade --install {{ app_release_name }} {{ app_chart_path }}
+    --namespace {{ app_namespace }} 
+    --create-namespace
+    --values {{ app_chart_path }}/values.yaml
+    --set engine.image.repository={{ engine_image_repo }}
+    --set engine.image.tag={{ app_version }}
+    --set cli.image.repository={{ cli_image_repo }}
+    --set cli.image.tag={{ app_version }}
+    --set global.host={{ app_host }} 
+    --atomic
+    --timeout 5m
+    --wait
+  register: helm_app_result
+  changed_when: >
+    'has been upgraded' in helm_app_result.stdout or
+    'has been deployed' in helm_app_result.stdout
+
+- name: Print Helm output
+  debug:
+    msg: "{{ helm_app_result.stdout_lines }}"
+
+- name: Verify engine rollout
+  command: >
+    kubectl rollout status statefulset/{{ app_release_name }}-engine
+    --namespace {{ app_namespace }}
+    --timeout=3m
+  changed_when: false
+
+- name: Verify CLI rollout
+  command: >
+    kubectl rollout status deployment/{{ app_release_name }}-cli
+    --namespace {{ app_namespace }}
+    --timeout=3m
+  changed_when: false
+
+- name: Print pods status
+  command: kubectl get pods -n {{ app_namespace }} -o wide
+  register: pod_status
+  changed_when: false
+
+- name: Show pods
+  debug:
+    msg: "{{ pod_status.stdout_lines }}"
+
+- name: Get Ingress URL
+  command: >
+    kubectl get ingress {{ app_release_name }}-ingress
+    -n {{ app_namespace }}
+    -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
+  register: ingress_url
+  changed_when: false
+  retries: 10
+  delay: 15
+  until: ingress_url.stdout != ""
+
+- name: Save ingress URL to file
+  copy:
+    content: "{{ ingress_url.stdout }}"
+    dest: /tmp/ingress_url.txt
+
+- name: Print app URL
+  debug:
+    msg:
+      - "App deployed successfully"
+      - "Engine API:  http://{{ ingress_url.stdout }}/api"
+      - "CLI terminal: http://{{ ingress_url.stdout }}/cli"

@@ -1,0 +1,70 @@
+# Deploys the grafana and prometheus stack helm chart to monitor the app.
+# Run eks_auth role before this role
+---
+
+- name: Add prometheus-community Helm repo
+  command: helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+  changed_when: false
+
+- name: Update Helm repo
+  command: helm repo update
+  changed_when: false
+
+- name: Run helm dependency update
+  command: helm dependency update {{ monitoring_chart_path }}
+  changed_when: true
+
+# Download grafana dashboard 18283 JSON from grafana api.
+# force: true re-fetches on every deploy so new revisions are picked up
+# automatically.
+- name: Download Grafana dashboard 18283 JSON
+  get_url:
+    url: "{{ dashboard_url }}"
+    dest: "{{ dashboard_dest }}"
+    mode: 0644
+    force: true
+
+- name: Verify dashboard JSON was downloaded
+  stat:
+    path: "{{ dashboard_dest }}"
+  register: dashboard_file
+  failed_when: not dashboard_file.stat.exists
+
+# --set-file inject the JSON file contents as dashboard.18283.json
+- name: Deploy monitoring chart
+  command: >
+    helm upgrade --install {{ monitoring_release_name }} {{ monitoring_chart_path }}
+    --namespace {{ monitoring_namespace }}
+    --create-namespace
+    --values {{ monitoring_chart_path }}/values.yaml
+    --set kube-prometheus-stack.grafana.adminPassword={{ grafana_password }}
+    --set kube-prometheus-stack.grafana.ingress.hosts={{ grafana_host }}
+    --set-file dashboard\.18283\.json={{ dashboard_dest }}
+    --atomic
+    --timeout 10m
+    --Wait
+  register: helm_monitoring_result
+  changed_when: >
+    'has been upgraded' in helm_monitoring_result.stdout or
+    'has been deployed' in helm_monitoring_result.stdout
+  no_log: false
+
+- name: Print Helm output
+  debug:
+    msg: "{{ helm_monitoring_result.stdout_lines }}"
+
+- name: Wait for Grafana to be ready
+  command: >
+    kubectl rollout status deployment/{{ monitoring_release_name }}-grafana
+    --namespace {{ monitoring_namespace }}
+    --timeout=5m
+  changed_when: false
+
+- name: Print monitoring pods status
+  command: kubectl get pods -n {{ monitoring_namespace }} -o wide
+  register: monitoring_pods_status
+  changed_when: false
+
+- name: Show monitoring pods
+  debug:
+    msg: "{{ monitoring_pods_status.stdout_lines }}"

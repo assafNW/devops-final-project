@@ -1,0 +1,137 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: seyoawe-alerts
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: seyoawe
+    release: {{ .Release.Name }}
+spec:
+  groups:
+    - name: seyoawe.engine 
+      interval: 30s
+      rules:
+        # Engine pod is down
+        - alert: SeyoaweEngineDown
+          expr: kube_deployment_status_replicas_ready{deployment="seyoawe-engine", namespace="seyoawe"} < 1
+          for: 2m
+          labels: 
+            severity: critical
+            component: engine
+          annotations:
+            summary: "SeyoAWE engine has no ready replicas"
+            description: "Deployment seyoawe-engine has had 0 ready replicas for more than 2 minutes."
+
+        # Engine pod is restarting repeatedly
+        - alert: SeyoaweEngineHighNumberOfRestarts
+          expr: increase(kube_pod_container_status_restarts_total{namespace="seyoawe", pod=~"seyoawe-engine.*"}[15m]) > 3
+          for: 5m
+          labels: 
+            severity: warning
+            component: engine
+          annotations:
+            summary: "SeyoAWE engine pod restarting repeatedly"
+            description: "Pod {{ $labels.pod }} has restarted more than 3 times in the last 15 minutes."
+        
+        # PVC storage is running low
+        - alert: SeyoaweEngineStorageLow
+          expr: |
+            (kubelet_volume_stats_available_bytes{namespace="seyoawe", persistentvolumeclaim=~ "seyoawe-engine-.*"} 
+            / kubelet_volume_stats_capacity_bytes{namespace="seyoawe", persistentvolumeclaim=~ "seyoawe-engine-.*"}) < 0.15
+          for: 5m
+          labels: 
+            severity: warning
+            component: engine
+          annotations:
+            summary: "SeyoAWE engine PVC below 15% free"
+            description: "PVC {{ $labels.persistentvolumeclaim }} has less than 15% storage left."
+        
+        # High CPU Usage
+        - alert: SeyoaweEngineHighCpuUsage
+          expr: |
+            rate(container_cpu_usage_seconds_total{namespace="seyoawe", pod=~ "seyoawe-engine-.*", container="engine"}[5m]) 
+            / on(pod) kube_pod_container_resource_limits{namespace="seyoawe", resource="cpu"}) > 0.85
+          for: 10m
+          labels: 
+            severity: warning
+            component: engine
+          annotations:
+            summary: "SeyoAWE engine CPU above 85% of limit"
+            description: "Pod {{ $labels.pod }} has been using more than 85% of its CPU limit for over 10 minutes."
+        
+        # High Memory Usage
+        - alert: SeyoaweEngineHighMemoryUsage
+          expr: |
+            container_memory_working_set_bytes{namespace="seyoawe", pod=~ "seyoawe-engine-.*", container="engine"}
+            / on(pod) kube_pod_container_resource_limits{namespace="seyoawe", resource="memory"}) > 0.85
+          for: 10m
+          labels: 
+            severity: warning
+            component: engine
+          annotations:
+            summary: "SeyoAWE engine memory above 85% of limit"
+            description: "Pod {{ $labels.pod }} has been using more than 85% of its memory limit for over 10 minutes."
+    
+    - name: seyoawe.cli
+      interval: 30s
+      rules: 
+        # CLI pod is down
+        - alert: SeyoaweCliDown
+          expr: kube_deployment_status_replicas_ready{deployment="seyoawe-cli", namespace="seyoawe"} < 1
+          for: 2m
+          labels: 
+            severity: critical
+            component: cli
+          annotations:
+            summary: "SeyoAWE CLI has no ready replicas"
+            description: "Deployment seyoawe-cli has had 0 ready replicas for more than 2 minutes."
+
+        # CLI pod is restarting repeatedly
+        - alert: SeyoaweCliHighNumberOfRestarts
+          expr: increase(kube_pod_container_status_restarts_total{namespace="seyoawe", pod=~"seyoawe-cli.*"}[15m]) > 3
+          for: 5m
+          labels: 
+            severity: warning
+            component: cli
+          annotations:
+            summary: "SeyoAWE cli pod restarting repeatedly"
+            description: "Pod {{ $labels.pod }} has restarted more than 3 times in the last 15 minutes."
+        
+        # PVC storage is running low
+        - alert: SeyoaweCliStorageLow
+          expr: |
+            (kubelet_volume_stats_available_bytes{namespace="seyoawe", persistentvolumeclaim=~ "seyoawe-cli-.*"} 
+            / kubelet_volume_stats_capacity_bytes{namespace="seyoawe", persistentvolumeclaim=~ "seyoawe-cli-.*"}) < 0.15
+          for: 5m
+          labels: 
+            severity: warning
+            component: cli
+          annotations:
+            summary: "SeyoAWE CLI PVC below 15% free"
+            description: "PVC {{ $labels.persistentvolumeclaim }} has less than 15% storage left."
+        
+        # High CPU Usage
+        - alert: SeyoaweCliHighCpuUsage
+          expr: |
+            rate(container_cpu_usage_seconds_total{namespace="seyoawe", pod=~ "seyoawe-cli-.*", container="cli"}[5m]) 
+            / on(pod) kube_pod_container_resource_limits{namespace="seyoawe", resource="cpu"}) > 0.85
+          for: 10m
+          labels: 
+            severity: warning
+            component: cli
+          annotations:
+            summary: "SeyoAWE CLI CPU above 85% of limit"
+            description: "Pod {{ $labels.pod }} has been using more than 85% of its CPU limit for over 10 minutes."
+        
+        # High Memory Usage
+        - alert: SeyoaweCliHighMemoryUsage
+          expr: |
+            container_memory_working_set_bytes{namespace="seyoawe", pod=~ "seyoawe-cli-.*", container="cli"}
+            / on(pod) kube_pod_container_resource_limits{namespace="seyoawe", resource="memory"}) > 0.85
+          for: 10m
+          labels: 
+            severity: warning
+            component: cli
+          annotations:
+            summary: "SeyoAWE CLI memory above 85% of limit"
+            description: "Pod {{ $labels.pod }} has been using more than 85% of its memory limit for over 10 minutes."

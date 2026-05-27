@@ -1,0 +1,12 @@
+pytest
+pytest-cov
+pytest-mock
+pytest-timeout
+pytest-xdist
+pytest-rerunfailures
+requests
+pyyaml
+playwright
+websocket-client
+pytest-allure-adaptor 
+allure-pytest

@@ -1,0 +1,12 @@
+# This Grafana dashboard is using dashboard 18283 from Grafana dashboards site
+
+apiVersion: v1
+kind: ConfigMap
+metadata: 
+  name: {{ .Release.Name }}-dashboard-18283
+  namespace: {{ .Release.Namespace }}
+  labels:
+    grafana_dashboard: "1"
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  kubernetes-dashboard-18283.json: {{ .Values.dashboard.18283.json | toJson }}

@@ -1,0 +1,67 @@
+---
+# lifetimes - engine: /app/lifetimes 
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-lifetimes-pvc
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: efc-sc 
+  resources:
+    requests:
+      storage: {{ .Values.sharedStorage.size }}
+
+---
+# logs - engine: /app/logs 
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-logs-pvc
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: efc-sc 
+  resources:
+    requests:
+      storage: {{ .Values.sharedStorage.size }}
+
+---
+# workflows - engine: /app/workflows | cli: /home/sawectl/workflows
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-workflows-pvc
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: efc-sc 
+  resources:
+    requests:
+      storage: {{ .Values.sharedStorage.size }}
+
+---
+# modules - engine: /app/modules | cli: /home/sawectl/modules
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-modules-pvc
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: efc-sc  
+  resources:
+    requests:
+      storage: {{ .Values.sharedStorage.Size }}

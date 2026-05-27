@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: {{ .Release.Name }}-cli
+  namespace: {{ .Release.Namespace }}
+  labels: 
+    app: {{ .Release.Name }}-cli
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector: 
+    matchLabels:
+      app: {{ .Release.Name }}-cli
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template: 
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-cli
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        fsGroup: 10001
+
+      containers:
+        - name: cli
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}" #"assafnw/seyoawe-cli:version"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          
+          ports:
+            - name: ttyd
+              containerPort: {{ .Values.service.targetPort }}
+              protocol: TCP 
+          
+          env:
+            - name: SEYOAWE_ENGINE_URL
+              value: {{ .Values.engineUrl | quote }}
+          
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.healthCheck.path }}
+              port: {{ .Values.service.targetPort }}
+            initialDelaySeconds: {{ .Values.healthCheck.initialDelaySeconds }}
+            periodSeconds: {{ .Values.healthCheck.periodSeconds }}
+            failureThreshold: 3
+
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.healthCheck.path }}
+              port: {{ .Values.service.targetPort }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          
+          volumeMounts:
+            - name: lifetimes
+              mountPath: /home/sawctl/lifetimes
+            - name: logs
+              mountPath: /home/sawctl/logs
+            - name: workflows
+              mountPath: /home/sawctl/workflows
+            - name: modules
+              mountPath: /home/sawctl/modules
+
+      volumes:
+        - name: lifetimes
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-lifetimes-pvc
+        - name: logs
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-logs-pvc
+        - name: workflows
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-workflows-pvc
+        - name: modules
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-modules-pvc

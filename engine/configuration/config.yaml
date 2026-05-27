@@ -3,14 +3,15 @@
     format: "[%(asctime)s] [%(levelname)s] [%(name)s:%(lineno)d] - %(message)s"
     
   directories:
-    workdir: ./seyoawe-community
-    modules: ./seyoawe-community/modules
-    workflows: ./seyoawe-community/workflows
-    lifetimes: ./seyoawe-community/lifetimes
-    logs: ./seyoawe-community/logs
+    workdir: .
+    modules: ./modules
+    workflows: ./workflows
+    lifetimes: ./lifetimes
+    logs: ./logs
 
   app:
     port: 8080
+    customer_id: default
     poll_for_modules_on_startup: false # controlls the poller behavior. setting to true will override your modules every time the app boots
     ignored_workflow_dirs: # directories under directories.workflows that will be ignored by the engine
       - "samples"
@@ -35,6 +36,7 @@
       api_key: ""
 
     api:
+      customer_id: default
       timeout: 15
       headers:
         Content-Type: "application/json"

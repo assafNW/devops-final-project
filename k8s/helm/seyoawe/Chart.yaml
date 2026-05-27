@@ -1,0 +1,14 @@
+apiVersion: v2
+name: seyoawe
+description: Seyoawe platform - engine + cli web terminal
+type: application
+version: 0.1.0
+appVersion: "1.0.0" # will be overriden at deploy by the respective version
+
+dependencies:
+  - name: engine
+    version: "0.1.0"
+    repository: "file://charts/engine"
+  - name: cli
+    version: "0.1.0"
+    repository: "file://charts/cli"

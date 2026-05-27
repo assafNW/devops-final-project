@@ -1,0 +1,15 @@
+---
+- name: Render EFS StorageClass j2 yaml file
+  template:
+    src: efs-storageclass.yaml.j2
+    dest: /tmp/efs-storageclass.yaml
+    mode: "0644"
+
+- name: Apply EFS StorageClass
+  command: kubectl apply -f /tmp/efs-storageclass.yaml
+  changed_when: false
+
+- name: Verify StorageClass exists
+  command: kubectl get storageclass efs-sc
+  changed_when: false
+  

@@ -1,0 +1,22 @@
+# Configure kubectl to point at the EKS cluster.
+# AWS credentials should be on github secret - 
+# the GitHub Actions workflow sets them via 
+# aws-actions/configure-aws-credentials before 
+# running ansible
+---
+
+- name: Update kubeconfig for EKS cluster {{ cluster_name }}
+  command: >
+    aws eks update-kubeconfig
+    --region {{ aws_region }}
+    --name {{ cluster_name }}
+  changed_when: false
+
+- name: Verify cluster connectivity
+  command: kubectl get nodes
+  register: nodes_check
+  changed_when: false
+
+- name: Print cluster nodes
+  debug: 
+    msg: "{{ nodes_check.stdout_lines }}"

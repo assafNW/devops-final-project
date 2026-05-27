@@ -1,0 +1,468 @@
+name: CI - SeyoAWE Testing
+
+on:
+  # push:
+  #   branches: [main]
+  workflow_dispatch:
+
+env: 
+  REGISTRY: docker.io
+
+jobs:
+
+  # SeyoAWE Engine - Build, Run, Testings (Unit and Integration)
+  engine:
+    name: Engine CI
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with: 
+          python-version: "3.11"
+      
+      - name: Install test dependencies
+        run: |
+          pip install -r tests/requirements-test.txt
+      
+      - name: Build engine docker image
+        run: | # the build context of the dockerfile is root repo
+          docker build \
+            -f docker/engine/Dockerfile \
+            -t seyoawe-engine:ci \
+            . 
+      
+      - name: Run engine container
+        run: | 
+          docker run -d \
+            --name seyoawe-engine-ci \
+            -p 8080:8080 \
+            seyoawe-engine:ci
+
+          echo "Waiting for engine health endpoint..."
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:8080/health && break
+            echo "Attempt $i/30 - engine is not ready yet"
+            sleep 2
+          done
+      
+      - name: Run engine unit tests
+        run: |
+          pytest tests/unit/engine/ \
+            -m unit \
+            --alluredir allure-results/engine/unit \
+            --tb=short \
+            -v
+        env:
+          ENGINE_URL: http://localhost:8080
+      
+      - name : stop engine container
+        if: always()
+        run: docker rm -f seyoawe-engine-ci 
+
+      - name: Upload engine allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-engine
+          path: allure-results/engine/
+          retention-days: 3
+  
+  # CLI - Build, Run, Testings (Unit and Integration)
+  cli:
+    name: CLI CI
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with: 
+          python-version: "3.11"
+      
+      - name: Install test dependencies
+        run: |
+          pip install -r tests/requirements-test.txt
+      
+      - name: Build CLI docker image
+        run: |
+          docker build \
+            -f docker/cli/Dockerfile \
+            -t seyoawe-cli:ci \
+            ./
+      
+      - name: Run CLI container
+        run: |
+          docker run -d \
+            --name seyoawe-cli-ci \
+            -p 8081:8081 \
+            seyoawe-cli:ci
+
+          echo "Waiting for CLI ttyd..."
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:8081 && break
+            echo "Attempt $i/30 - CLI ttyd not ready yet"
+            sleep 2
+          done
+
+      - name: Run CLI unit tests
+        run: | 
+          pytest tests/unit/cli/ \
+            -m unit \
+            --alluredir allure-results/cli/unit \
+            --tb=short \
+            -v
+        env: 
+          CLI_URL: http://localhost:8081
+
+      - name: Stop CLI container
+        run: |
+          docker rm -f seyoawe-cli-ci
+      
+      - name: Upload CLI allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-cli
+          path: allure-results/cli/
+          retention-days: 3
+
+  integration_e2e:
+    name: Integration and E2E Tests
+    runs-on: ubuntu-latest
+    needs: [engine,cli]
+
+    steps: 
+      - name: Git Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with: 
+          python-version: "3.11"
+      
+      - name: Install test dependencies
+        run: |
+          pip install -r tests/requirements-test.txt
+      
+      - name: Build docker images for engine and CLI
+        run: |
+          docker build -f ./docker/engine/Dockerfile -t seyoawe-engine:ci .
+          docker build -f ./docker/cli/Dockerfile -t seyoawe-cli:ci .
+        
+      - name: Start full app stack
+        run: 
+          docker network create seyoawe-ci
+
+          docker run -d \
+            --name seyoawe-engine-e2e \
+            --network seyoawe-ci \
+            -p 8080:8080 \
+            seyoawe-engine:ci
+
+          docker run -d \
+            --name seyoawe-cli-e2e \
+            --network seyoawe-ci \
+            -p 8081:8081 \
+            -e SEYOAWE_ENGINE_URL=http://seyoawe-engine-e2e:8080 \
+            seyoawe-cli:ci
+        
+          echo "Waiting for engine..."
+          for i in $(sew 1 in 30); do
+            curl -sf http://localhost:8080/health && break; 
+            sleep 2
+          done
+
+          echo "Waiting for CLI..."
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:8081 && break
+            sleep 2
+          done
+
+      - name: Run engine integration tests
+        run: |
+          pytest tests/integration/engine/ \
+            -m integration \
+            --alluredir allure-results/engine/integration \
+            --tb=short \
+            -v
+        env:
+          ENGINE_URL: http://localhost:8080
+
+      - name: Run CLI integration tests
+        run: |
+          pytest tests/integration/cli/ \
+            -m integration \
+            --alluredir allure-results/cli/integration \
+            --tb=short \
+            -v
+        env:
+          CLI_URL: http://localhost:8081
+
+      - name: Run E2E tests
+        run: |
+          pytest tests/e2e/ \
+            --alluredir allure-results/e2e \
+            --tb=short \
+            -v
+        env:
+          ENGINE_URL: http://localhost:8080
+          CLI_URL: http://localhost:8081
+      
+      - name: Stop seyoawe app stack
+        if: always()
+        run: | 
+          docker rm -f seyoawe-engine-e2e seyoawe-cli-e2e 
+          docker network rm seyoawe-ci 
+      
+      - name: Upload engine integration allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-engine-integration
+          path: allure-results/engine/integration
+          retention-days: 3
+
+      - name: Upload cli integration allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-cli-integration
+          path: allure-results/cli/integration
+          retention-days: 3
+
+      - name: Upload E2E allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-e2e
+          path: allure-results/e2e/
+          retention-days: 3
+
+  # Allure Report - merge all results and publish to Github Pages
+  allure-report:
+    name: Publish Allure Report
+    runs-on: ubuntu-latest
+    needs: [integration_e2e]
+    if: always()
+
+    permissions:
+      content: write # to push to github-pages
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Download engine results
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results-engine
+          path: allure-results/engine/
+      
+      - name: Download CLI results
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results-cli
+          path: allure-results/cli/
+      
+      - name: Download E2E results
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results-e2e
+          path: allure-results/e2e/
+      
+      - name: Merge all results into one directory
+        run: | 
+          mkdir -p allure-results-merged
+          cp -r allure-results/engine/* allure-results-merged/ 2>/dev/null || true
+          cp -r allure-results/cli/* allure-results-merged/ 2>/dev/null || true
+          cp -r allure-results/e2e/* allure-results-merged/ 2>/dev/null || true
+      
+      - name: Install Allure CLI
+        run: |
+          curl -fsSL https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz \
+            -o /tmp/allure.tgz
+          tar -xzf /tmp/allure.tgz -C /tmp
+          sudo mv /tmp/allure-2.27.0 /opt/allure
+          sudo ln -s /opt/allure/bin/allure /usr/local/bin/allure
+
+      - name: Restore previous Allure history
+      # pull history from gh-pages so trend graphs carry accross runs
+        run: |
+          git fetch origin gh-pages --depth=1 2>/dev/null || true
+          git show origin/gh-pages:history 2>/dev/null \
+            | tar -xz -C allure-results-merged/ 2>/dev/null || true
+        
+      - name: Generate Allure HTML Report
+        run: |
+          allure generate allure-results-merged \
+            --output allure-report \
+            --clean
+
+      - name: Save history for next run
+        run: |
+          tar -czf allure-report/history.tar.gz -C allure-report history/ 2>/dev/null || true
+
+      - name: Deploy to Github Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with: 
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: allure-report
+          publish_branch: gh-pages
+          destination_dir: reports/${{ github.run_number }}
+          keep_files: true
+      
+      - name: Post report URL to job summary
+        run: |
+          REPO="${{ github.repository }}"
+          RUN="${{ github.run_number }}"
+          URL="https://${REPO%%/*}.github.io/${REPO##*/}/reports/${RUN}/index.html"
+          echo "## Allure Report" >> $GITHUB_STEP_SUMMARY
+          echo "[View full test report]($URL)" >> $GITHUB_STEP_SUMMARY
+  
+  # SUCCESS - if all tests passed, do tag version increase and push images to Dockerhub
+  publish:
+    name: Tag & Push images
+    runs-on: ubuntu-latest
+    needs: [engine,cli,integration_e2e]
+    if: success() && github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
+    outputs:
+      new_version: ${{ steps.tagger.outputs.new_tag }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+        fetch-depth: 0
+
+      - name: Bump version and push tag
+        id: tagger
+        uses: anothrNick/github-tag-actions@1.71.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: patch
+          WITH_V: true
+      
+      - name: Set version in environment
+        run: echo "APP_VERSION=${{ steps.tagger.output.new_tag }}" >> $GITHUB_ENV
+      
+      - name: Login to Dockerhub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      
+      - name: Build and push engine image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./docker/engine/Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USER }}/seyoawe-engine:${{ env.APP_VERSION }}
+            ${{ secrets.DOCKERHUB_USER }}/seyoawe-engine:latest
+      
+      - name: Build and push CLI image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./docker/cli/Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USER }}/seyoawe-cli:${{ env.APP_VERSION }}
+            ${{ secrets.DOCKERHUB_USER }}/seyoawe-cli:latest
+      
+      - name: Push git version tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@noreply.com"
+          git tag -a "${{ env.APP_VERSION }}" -m "Release v${{ env.APP_VERSION }}"
+          git push origin "${{ env.APP_VERSION }}"
+      
+      - name: Send success email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.SMTP_SERVER }}
+          server_port: 587
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          to: ${{ secrets.NOTIFY_EMAIL }}
+          from: "CI Pipeline <${{ secrets.SMTP_USERNAME }}>"
+          subject: "CI SUCCESS - ${{ github.repository }} - run #${{ github.run_number }}
+          body: |
+            CI pipeline succeed on ${{ github.repository }}.
+
+            Branch: ${{ github.ref_name }}
+            Commit: ${{ github.sha }}
+            Triggered: ${{ github.actor }}
+            Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            Allure Report URL: "https://${REPO%%/*}.github.io/${REPO##*/}/reports/${RUN}/index.html"
+
+            A github tag version was pushed to repository - version: ${{ env.APP_VERSION }}.
+  
+  # Failure - Open Jira ticket and send email
+  on-failure:
+    name: Failure Notifications
+    runs-on: ubuntu-latest
+    needs: [engine, cli, integration_e2e]
+    if: |
+      always() && 
+      (
+      needs.engine.results != 'success' ||
+      needs.cli.results != 'success' ||
+      needs.integration_e2e.results != 'success'
+      )
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Open Jira bug ticket
+        uses: atlassian/gajira-create@v3
+        with:
+          project: ${{ secrets.JIRA_PROJECT_KEY }}
+          issuetype: bug
+          summary: "CI failure - ${{ github.repository }} - run #${{ github.run_number }}"
+          description: |
+            *Pipeline:* ${{ github.workflow }}
+            *Branch:* ${{ github.ref_name }}
+            *Commit:* ${{ github.sha }}
+            *Run:* https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            *Triggered by: ${{ github.actor }}
+            *Allure Report URL:* "https://${REPO%%/*}.github.io/${REPO##*/}/reports/${RUN}/index.html"
+
+            Tests failed on run #${{ github.run_number}}.
+            Check the Allure report for details.
+          env:
+            JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+            JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
+            JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+
+      - name: Send failure email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.SMTP_SERVER }}
+          server_port: 587
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          to: ${{ secrets.NOTIFY_EMAIL }}
+          from: "CI Pipeline <${{ secrets.SMTP_USERNAME }}>"
+          subject: "CI FAILED - ${{ github.repository }} - run #${{ github.run_number }}
+          body: |
+            CI pipeline failed on ${{ github.repository }}.
+
+            Branch: ${{ github.ref_name }}
+            Commit: ${{ github.sha }}
+            Triggered: ${{ github.actor }}
+            Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            Allure Report URL: "https://${REPO%%/*}.github.io/${REPO##*/}/reports/${RUN}/index.html"
+
+            A Jira bug ticket has been opened in project ${{ secrets.JIRA_PROJECT_KEY }}.
+      

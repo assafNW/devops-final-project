@@ -1,0 +1,39 @@
+---
+
+- name: Install kubectl {{ kubectl_version }}
+  shell: |
+    curl -fsSL "https://dl.k8s.io/release/v{{ kubectl_version }}/bin/linux/amd64/kubectl" -o /tmp/kubectl
+    chmod +x /tmp/kubectl
+    mv /tmp/kubectl /usr/local/bin/kubectl
+  args:
+    creates: /usr/local/bin/kubectl
+
+- name: Verify kubectl
+  command: kubectl version --client
+  changed_when: false
+
+- name: Install AWS CLI v2
+  shell: |
+    curl -fsSL "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o /tmp/awscliv2.zip
+    unzip -q /tmp/awscliv2.zip -d /tmp/awscli
+    /tmp/awscli/aws/install --update
+    rm -rf /tmp/awscli /tmp/awscliv2.zip
+  args:
+    creates: /usr/local/bin/aws
+
+- name: Verify AWS CLI 
+  command: aws --version
+  changed_when: false
+
+- name: Install Helm {{ helm_version }}
+  shell: |
+    curl -fsSL "https://get.helm.sh/helm-v{{ helm_version }}-linux-amd64.tar.gz" -o /tmp/helm.tar.gz
+    tar -xzf /tmp/helm.tar.gz -C /tmp/helm-install
+    mv /tmp/helm-install/linux-amd64/helm /usr/local/bin/helm
+    rm -rf /tmp/helm-install /tmp/helm.tar.gz
+  args: 
+    creates: /usr/local/bin/helm
+
+- name: Verify Helm
+  command: helm version
+  changed_when: false

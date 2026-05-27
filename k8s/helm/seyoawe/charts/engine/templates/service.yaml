@@ -1,0 +1,37 @@
+---
+# Headless - required by StatefulSet for stable pod DNS
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-engine-headless
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}-engine
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  clusterIP: None
+  selector:
+    app: {{ .Release.Name }}-engine
+  ports:
+    - name: http
+      port: {{ .Values.service.targetPort }}
+      targetPort: {{ .Values.service.targetPort }} 
+
+---
+# ClusterIP - for in cluster connection for Ingress and CLI
+apiVersion: v1
+kind: Service
+metadata: 
+  name: {{ .Release.Name }}-engine
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}-engine
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ .Release.Name }}-engine
+    port: 
+      - name: http
+        port: {{ .Values.service.port }}
+        targetPort: {{ .Values.service.targetPort }}

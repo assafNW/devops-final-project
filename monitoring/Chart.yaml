@@ -1,0 +1,10 @@
+apiVersion: v2
+name: seyoawe-monitoring
+description: Prometheus + Grafana monitoring stack for seyoawe app
+type: application
+version: 0.1.0
+
+dependencies:
+  - name: kube-prometheus-stack
+    version: 58.3.1
+    repository: "https://prometheus-community.github.io/helm-charts"

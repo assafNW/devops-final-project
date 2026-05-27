@@ -1,0 +1,58 @@
+---
+# Variables which are shared across the roles.
+
+environment: "prod"
+# app_host: "prod.seyoawe.example.com"
+# grafana_host: "grafana.prod.seyoawe.example.com"
+
+# Tool Versions
+kubectl_version: "1.29.0"
+helm_version: "3.14.0"
+
+# AWS
+aws_region: "us-east-2"
+
+# Kubernetes
+app_namespace: "seyoawe"
+monitoring_namespace: "monitoring"
+
+# Helm release names:
+app_release_name: "seyoawe"
+monitoring_release_name: "seyoawe-monitoring"
+
+# Helm chart paths (relative to repo root)
+app_chart_path: "k8s/helm/seyoawe"
+monitoring_chart_path: "k8s/monitoring/seyoawe-monitoring"
+
+# DockerHub
+# Can be injected at run time from GitHub Actions secrets,
+# or use the local vault(group_vars/all/vault.yaml) 
+dockerhub_user: "assafnw"
+
+# Image Repositories
+engine_image_repo: "{{ dockerhub_user }}/seyoawe_engine"
+cli_image_repo: "{{ dockerhub_user }}/seyoawe-cli"
+
+# App Version
+# given by github actions workflow's variable:
+# - name: Set version from git tag
+#   run: echo "APP_VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
+app_version: "{{ lookup('env', 'APP_VERSION') }}"
+
+# EKS cluster name
+# given from Terraform output by github actions workflow's var:
+# TF_OUTPUT_CLUSTER_NAME
+cluster_name: "{{ lookup('env', 'TF_OUTPUT_CLUSTER_NAME') }}"
+
+# Grafana
+# given from github actions secrets:
+#  GRAFANA_PASSWORD
+grafana_password: "{{ lookup('env', 'GRAFANA_PASSWORD') }}"
+
+# Dashboard
+dashboard_url: "https://grafana.com/api/dashboards/18283/revisions/latest/download"
+dashboard_dest: "/tmp/dashboard-18283.json"
+
+# EFS
+# Injected from Terraform output by the GitHub Actions workflow
+efs_id: "{{ lookup('env', 'TF_OUTPUT_EFS_ID') }}"
