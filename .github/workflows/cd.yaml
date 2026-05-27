@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     outputs:
-      cluster_name: ${{ step.tf_outputs.outputs.cluster_name }}
+      cluster_name: ${{ steps.tf_outputs.outputs.cluster_name }}
       efs_id: ${{ steps.tf_outputs.outputs.efs_id }}
 
     steps:
@@ -167,6 +167,10 @@ jobs:
 
       - name: Open Jira bug ticket
         uses: atlassian/gajira-create@v3
+        env:
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
         with:
           project: ${{ secrets.JIRA_PROJECT_KEY }}
           issuetype: bug
@@ -179,10 +183,6 @@ jobs:
             *Triggered by: ${{ github.actor }}
             
             CD failed on run #${{ github.run_number}}.
-          env:
-            JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
-            JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
-            JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
 
       - name: Send failure email
         uses: dawidd6/action-send-mail@v3
