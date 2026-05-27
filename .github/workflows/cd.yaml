@@ -118,7 +118,7 @@ jobs:
           password: ${{ secrets.SMTP_PASSWORD }}
           to: ${{ secrets.NOTIFY_EMAIL }}
           from: "CD Pipeline <${{ secrets.SMTP_USERNAME }}>"
-          subject: "CD SUCCESS - ${{ github.repository }} - run #${{ github.run_number }}
+          subject: "CD SUCCESS - ${{ github.repository }} - run #${{ github.run_number }}"
           body: |
             CD pipeline succeed on ${{ github.repository }}.
 
