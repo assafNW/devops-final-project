@@ -395,7 +395,7 @@ jobs:
           password: ${{ secrets.SMTP_PASSWORD }}
           to: ${{ secrets.NOTIFY_EMAIL }}
           from: "CI Pipeline <${{ secrets.SMTP_USERNAME }}>"
-          subject: "CI SUCCESS - ${{ github.repository }} - run #${{ github.run_number }}
+          subject: "CI SUCCESS - ${{ github.repository }} - run #${{ github.run_number }}"
           body: |
             CI pipeline succeed on ${{ github.repository }}.
 
@@ -403,7 +403,7 @@ jobs:
             Commit: ${{ github.sha }}
             Triggered: ${{ github.actor }}
             Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-            Allure Report URL: "https://${REPO%%/*}.github.io/${REPO##*/}/reports/${RUN}/index.html"
+            Allure Report URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ github.run_number }}/index.html
 
             A github tag version was pushed to repository - version: ${{ env.APP_VERSION }}.
   
@@ -426,6 +426,10 @@ jobs:
 
       - name: Open Jira bug ticket
         uses: atlassian/gajira-create@v3
+        env:
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
         with:
           project: ${{ secrets.JIRA_PROJECT_KEY }}
           issuetype: bug
@@ -440,10 +444,6 @@ jobs:
 
             Tests failed on run #${{ github.run_number}}.
             Check the Allure report for details.
-          env:
-            JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
-            JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
-            JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
 
       - name: Send failure email
         uses: dawidd6/action-send-mail@v3
@@ -454,7 +454,7 @@ jobs:
           password: ${{ secrets.SMTP_PASSWORD }}
           to: ${{ secrets.NOTIFY_EMAIL }}
           from: "CI Pipeline <${{ secrets.SMTP_USERNAME }}>"
-          subject: "CI FAILED - ${{ github.repository }} - run #${{ github.run_number }}
+          subject: "CI FAILED - ${{ github.repository }} - run #${{ github.run_number }}"
           body: |
             CI pipeline failed on ${{ github.repository }}.
 
