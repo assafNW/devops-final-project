@@ -44,7 +44,7 @@ jobs:
 
       - name: Terraform Apply
         working-directory: ${{ env.TF_WORKING_DIR }}
-        run: terraform apply -auto-approve
+        run: terraform apply --auto-approve
       
       - name: Terraform outputs
         id: tf_outputs
@@ -164,7 +164,7 @@ jobs:
 
       - name: Terraform Destroy
         working-directory: ${{ env.TF_WORKING_DIR }}
-        run: terraform destroy -auto-approve
+        run: terraform destroy --auto-approve
 
       - name: Open Jira bug ticket
         uses: atlassian/gajira-create@v3

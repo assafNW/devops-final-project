@@ -40,6 +40,11 @@ jobs:
           docker run -d \
             --name seyoawe-engine-ci \
             -p 8080:8080 \
+            -p 9000:9000 \
+            -v ./app_data/logs:/app/logs \
+            -v ./app_data/lifetimes:/app/lifetimes \
+            -v ./engine/modules:/app/modules/ \
+            -v ./engine/workflows:/app/workflows \
             seyoawe-engine:ci
 
           echo "Waiting for engine health endpoint..."
@@ -101,6 +106,8 @@ jobs:
           docker run -d \
             --name seyoawe-cli-ci \
             -p 8081:8081 \
+            -v ./engine/modules:/home/sawectl/modules/ \
+            -v ./engine/workflows:/home/sawectl/workflows \
             seyoawe-cli:ci
 
           echo "Waiting for CLI ttyd..."
@@ -163,12 +170,19 @@ jobs:
             --name seyoawe-engine-e2e \
             --network seyoawe-ci \
             -p 8080:8080 \
+            -p 9000:9000 \
+            -v ./app_data/logs:/app/logs \
+            -v ./app_data/lifetimes:/app/lifetimes \
+            -v ./engine/modules:/app/modules/ \
+            -v ./engine/workflows:/app/workflows \
             seyoawe-engine:ci
 
           docker run -d \
             --name seyoawe-cli-e2e \
             --network seyoawe-ci \
             -p 8081:8081 \
+            -v ./engine/modules:/home/sawectl/modules/ \
+            -v ./engine/workflows:/home/sawectl/workflows \
             -e SEYOAWE_ENGINE_URL=http://seyoawe-engine-e2e:8080 \
             seyoawe-cli:ci
         

@@ -35,3 +35,7 @@ output "node_group_role_arn" {
   description = "IAM role ARN for the EKS node group - used by Ansible to configure kubectl"
   value = module.eks.node_group_role_arn
 }
+
+output "efs_id" {
+  value = module.efs.efs_id
+}
