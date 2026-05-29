@@ -41,15 +41,15 @@ jobs:
             --name seyoawe-engine-ci \
             -p 8080:8080 \
             -p 9000:9000 \
-            -v ./app_data/logs:/app/logs \
-            -v ./app_data/lifetimes:/app/lifetimes \
-            -v ./engine/modules:/app/modules/ \
-            -v ./engine/workflows:/app/workflows \
+            -v ${{ github.workspace }}/app_data/logs:/app/logs \
+            -v ${{ github.workspace }}/app_data/lifetimes:/app/lifetimes \
+            -v ${{ github.workspace }}/engine/modules:/app/modules/ \
+            -v ${{ github.workspace }}/engine/workflows:/app/workflows \
             seyoawe-engine:ci
 
           echo "Waiting for engine health endpoint..."
-          for i in $(seq 1 15); do
-            curl -sf http://localhost:9000/ && break
+          for i in $(seq 1 30); do
+            curl -s -o /dev/null -w "%{http_code}" localhost:9000  && break
             echo "Attempt $i/30 - engine is not ready yet"
             sleep 2
           done

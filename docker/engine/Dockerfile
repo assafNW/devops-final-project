@@ -56,7 +56,7 @@ USER seyoawe
 
 # Matches livenessProbe / readinessProbe in k8s/engine/statefulset.yaml
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-    CMD curl -f http://localhost:9000/ || exit 1
+    CMD curl -s -o /dev/null -w "%{http_code}" localhost:9000  || exit 1
 
 # run.sh selects the binary by platform — always 'linux' in a container
 ENTRYPOINT ["/app/run.sh", "linux"]
