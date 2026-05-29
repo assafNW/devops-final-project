@@ -106,8 +106,8 @@ jobs:
           docker run -d \
             --name seyoawe-cli \
             -p 8081:8081 \
-            -v ${{ github.workspace }}/engine/modules:/home/sawectl/modules/
-            -v ${{ github.workspace }}/engine/workflows:/home/sawectl/workflows
+            -v ${{ github.workspace }}/engine/modules:/home/sawectl/modules/ \
+            -v ${{ github.workspace }}/engine/workflows:/home/sawectl/workflows \
             seyoawe-cli:ci
 
           echo "Waiting for CLI ttyd..."
