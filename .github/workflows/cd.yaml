@@ -181,7 +181,7 @@ jobs:
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
         with:
           project: ${{ secrets.JIRA_PROJECT_KEY }}
-          issuetype: bug
+          issuetype: Bug
           summary: "CD failure - ${{ github.repository }} - run #${{ github.run_number }}"
           description: |
             *Pipeline:* ${{ github.workflow }}

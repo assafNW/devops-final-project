@@ -285,6 +285,7 @@ jobs:
           path: allure-results/cli/
       
       - name: Download E2E results
+        if: needs.integration_e2e.result == 'success'
         uses: actions/download-artifact@v4
         with:
           name: allure-results-e2e
@@ -296,7 +297,7 @@ jobs:
           cp -r allure-results/engine/* allure-results-merged/ 2>/dev/null || true
           cp -r allure-results/cli/* allure-results-merged/ 2>/dev/null || true
           cp -r allure-results/e2e/* allure-results-merged/ 2>/dev/null || true
-      
+                
       - name: Install Allure CLI
         run: |
           curl -fsSL https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz \
@@ -453,7 +454,7 @@ jobs:
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
         with:
           project: ${{ secrets.JIRA_PROJECT_KEY }}
-          issuetype: bug
+          issuetype: Bug
           summary: "CI failure - ${{ github.repository }} - run #${{ github.run_number }}"
           description: |
             *Pipeline:* ${{ github.workflow }}
