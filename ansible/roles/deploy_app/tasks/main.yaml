@@ -29,6 +29,24 @@
   debug:
     msg: "{{ helm_app_result.stdout_lines }}"
 
+- name: Verify local source path exists
+  ansible.builtin.stat:
+    path: "{{ playbook_dir }}/../../engine/{{ item.src }}"
+  loop:
+    - { src: 'modules' }
+    - { src: 'workflows' }
+  register: path_check
+  failed_when: not item.stat.exists
+
+- name: Copy folders via kubectl CLI
+  ansible.builtin.command: >
+    kubectl cp
+    {{ playbook_dir }}/../../engine/{{ item.src }}
+    {{ app_namespace }}/{{ app_release_name }}-engine-0:/app/{{ item.dest }}
+  loop:
+    - { src: 'modules', dest: 'modules' }
+    - { src: 'workflows', dest: 'workflows' }
+
 - name: Verify engine rollout
   command: >
     kubectl rollout status statefulset/{{ app_release_name }}-engine

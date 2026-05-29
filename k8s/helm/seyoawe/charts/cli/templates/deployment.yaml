@@ -62,22 +62,22 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           
           volumeMounts:
-            # - name: lifetimes
-            #   mountPath: /home/sawctl/lifetimes
-            # - name: logs
-            #   mountPath: /home/sawctl/logs
+            - name: lifetimes
+              mountPath: /home/sawctl/lifetimes
+            - name: logs
+              mountPath: /home/sawctl/logs
             - name: workflows
               mountPath: /home/sawctl/workflows
             - name: modules
               mountPath: /home/sawctl/modules
 
       volumes:
-        # - name: lifetimes
-        #   persistentVolumeClaim:
-        #     claimName: {{ .Release.Name }}-lifetimes-pvc
-        # - name: logs
-        #   persistentVolumeClaim:
-        #     claimName: {{ .Release.Name }}-logs-pvc
+        - name: lifetimes
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-lifetimes-pvc
+        - name: logs
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-logs-pvc
         - name: workflows
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-workflows-pvc
