@@ -262,7 +262,7 @@ jobs:
   allure-report:
     name: Publish Allure Report
     runs-on: ubuntu-latest
-    needs: [integration_e2e]
+    needs: [engine,cli,integration_e2e]
     if: always()
 
     permissions:
