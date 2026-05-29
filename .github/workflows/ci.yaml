@@ -49,7 +49,7 @@ jobs:
 
           echo "Waiting for engine health endpoint..."
           for i in $(seq 1 30); do
-            curl -sf http://localhost:8080/health && break
+            curl -sf http://localhost:8080/ && break
             echo "Attempt $i/30 - engine is not ready yet"
             sleep 2
           done
