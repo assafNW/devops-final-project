@@ -307,11 +307,14 @@ jobs:
           sudo ln -s /opt/allure/bin/allure /usr/local/bin/allure
 
       - name: Restore previous Allure history
-      # pull history from gh-pages so trend graphs carry accross runs
         run: |
-          git fetch origin gh-pages --depth=1 2>/dev/null || true
-          git show origin/gh-pages:history 2>/dev/null \
-            | tar -xz -C allure-results-merged/ 2>/dev/null || true
+          git fetch origin gh-pages --depth=1 || true
+          mkdir -p previous-report
+          git worktree add previous-report origin/gh-pages || true
+          if [ -d "previous-report/reports/latest/history" ]; then
+            mkdir -p allure-results-merged/history
+            cp -r previous-report/reports/latest/history/* allure-results-merged/history/
+          fi
         
       - name: Generate Allure HTML Report
         run: |
@@ -319,24 +322,27 @@ jobs:
             --output allure-report \
             --clean
 
-      - name: Save history for next run
+      - name: Create latest alias
         run: |
-          tar -czf allure-report/history.tar.gz -C allure-report history/ 2>/dev/null || true
+          mkdir -p pages/reports/${{ github.run_number }}
+          mkdir -p pages/reports/latest
+
+          cp -r allure-report/* pages/reports/${{ github.run_number }}/
+          cp -r allure-report/* pages/reports/latest/
 
       - name: Deploy to Github Pages
         uses: peaceiris/actions-gh-pages@v3
         with: 
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: allure-report
+          publish_dir: ./pages
           publish_branch: gh-pages
-          destination_dir: reports/${{ github.run_number }}
           keep_files: true
       
       - name: Post report URL to job summary
         run: |
           REPO="${{ github.repository }}"
           RUN="${{ github.run_number }}"
-          URL="https://${REPO%%/*}.github.io/${REPO##*/}/reports/${RUN}/index.html"
+          URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ github.run_number }}/index.html"
           echo "## Allure Report" >> $GITHUB_STEP_SUMMARY
           echo "[View full test report]($URL)" >> $GITHUB_STEP_SUMMARY
   
