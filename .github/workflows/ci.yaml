@@ -49,7 +49,7 @@ jobs:
 
           echo "Waiting for engine health endpoint..."
           for i in $(seq 1 30); do
-            curl -sf http://localhost:8080/ && break
+            curl -sf http://localhost:9000/ && break
             echo "Attempt $i/30 - engine is not ready yet"
             sleep 2
           done
@@ -291,13 +291,26 @@ jobs:
           name: allure-results-e2e
           path: allure-results/e2e/
       
+      # - name: Merge all results into one directory
+      #   run: | 
+      #     mkdir -p allure-results-merged
+      #     cp -r allure-results/engine/* allure-results-merged/ 2>/dev/null || true
+      #     cp -r allure-results/cli/* allure-results-merged/ 2>/dev/null || true
+      #     cp -r allure-results/e2e/* allure-results-merged/ 2>/dev/null || true
+
       - name: Merge all results into one directory
-        run: | 
+        run: |
           mkdir -p allure-results-merged
-          cp -r allure-results/engine/* allure-results-merged/ 2>/dev/null || true
-          cp -r allure-results/cli/* allure-results-merged/ 2>/dev/null || true
-          cp -r allure-results/e2e/* allure-results-merged/ 2>/dev/null || true
-                
+          find allure-results -type f \
+            \( -name "*.json" -o -name "*.txt" -o -name "*.xml" \) \
+            -exec cp {} allure-results-merged/ \;
+          mkdir -p allure-results-merged/history
+          if [ -d "allure-results/history" ]; then
+            cp -r allure-results/history/* allure-results-merged/history/ || true
+          fi
+          echo "Merged files:"
+          ls -lah allure-results-merged
+                    
       - name: Install Allure CLI
         run: |
           curl -fsSL https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz \
