@@ -49,11 +49,16 @@ jobs:
 
           echo "Waiting for engine health endpoint..."
           for i in $(seq 1 30); do
-            curl -s -o /dev/null -w "%{http_code}" localhost:9000  && break
+            curl -sf http://localhost:9000  && break
             echo "Attempt $i/30 - engine is not ready yet"
             sleep 2
           done
       
+      - name: Debug webform directory
+        run: |
+          ls -R ${{ github.workspace }}/engine/modules/webform
+          docker exec seyoawe-engine-ci ls -R /app/modules/webform
+
       - name: Run engine unit tests
         run: |
           pytest tests/unit/engine/ \
