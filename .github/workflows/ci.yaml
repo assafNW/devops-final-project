@@ -177,7 +177,7 @@ jobs:
           chmod -R 777 app_data
 
       - name: Start full app stack
-        run: 
+        run: |
           docker network create seyoawe-ci
 
           docker run -d \
@@ -201,7 +201,7 @@ jobs:
             seyoawe-cli:ci
         
           echo "Waiting for engine..."
-          for i in $(seq 1 in 30); do
+          for i in $(seq 1 30); do
             curl -sf http://localhost:9000 && break; 
             sleep 2
           done
