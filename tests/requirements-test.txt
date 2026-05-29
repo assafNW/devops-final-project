@@ -8,5 +8,4 @@ requests
 pyyaml
 playwright
 websocket-client
-pytest-allure-adaptor 
 allure-pytest
