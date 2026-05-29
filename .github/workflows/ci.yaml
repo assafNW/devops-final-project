@@ -293,18 +293,14 @@ jobs:
           path: allure-results/cli/
       
       - name: Download E2E results
-        if: needs.integration_e2e.result == 'success'
+        if: |
+          always() && 
+          needs.integration_e2e.result != 'skipped' && 
+          needs.integration_e2e.result != 'cancelled'
         uses: actions/download-artifact@v4
         with:
           name: allure-results-e2e
           path: allure-results/e2e/
-      
-      # - name: Merge all results into one directory
-      #   run: | 
-      #     mkdir -p allure-results-merged
-      #     cp -r allure-results/engine/* allure-results-merged/ 2>/dev/null || true
-      #     cp -r allure-results/cli/* allure-results-merged/ 2>/dev/null || true
-      #     cp -r allure-results/e2e/* allure-results-merged/ 2>/dev/null || true
 
       - name: Merge all results into one directory
         run: |
@@ -337,19 +333,19 @@ jobs:
             cp -r previous-report/reports/latest/history/* allure-results-merged/history/
           fi
       
-      - name: Debug merged results
-        run: |
-          echo "==== ENGINE ===="
-          find allure-results/engine -type f || true
+      # - name: Debug merged results
+      #   run: |
+      #     echo "==== ENGINE ===="
+      #     find allure-results/engine -type f || true
 
-          echo "==== CLI ===="
-          find allure-results/cli -type f || true
+      #     echo "==== CLI ===="
+      #     find allure-results/cli -type f || true
 
-          echo "==== E2E ===="
-          find allure-results/e2e -type f || true
+      #     echo "==== E2E ===="
+      #     find allure-results/e2e -type f || true
 
-          echo "==== MERGED ===="
-          find allure-results-merged -type f || true
+      #     echo "==== MERGED ===="
+      #     find allure-results-merged -type f || true
 
       - name: Generate Allure HTML Report
         run: |
