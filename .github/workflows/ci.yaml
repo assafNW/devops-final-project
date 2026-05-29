@@ -315,7 +315,21 @@ jobs:
             mkdir -p allure-results-merged/history
             cp -r previous-report/reports/latest/history/* allure-results-merged/history/
           fi
-        
+      
+      - name: Debug merged results
+        run: |
+          echo "==== ENGINE ===="
+          find allure-results/engine -type f || true
+
+          echo "==== CLI ===="
+          find allure-results/cli -type f || true
+
+          echo "==== E2E ===="
+          find allure-results/e2e -type f || true
+
+          echo "==== MERGED ===="
+          find allure-results-merged -type f || true
+
       - name: Generate Allure HTML Report
         run: |
           allure generate allure-results-merged \
