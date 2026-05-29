@@ -104,10 +104,10 @@ jobs:
       - name: Run CLI container
         run: |
           docker run -d \
-            --name seyoawe-cli-ci \
+            --name seyoawe-cli \
             -p 8081:8081 \
-            -v ./engine/modules:/home/sawectl/modules/ \
-            -v ./engine/workflows:/home/sawectl/workflows \
+            -v ${{ github.workspace }}/engine/modules:/home/sawectl/modules/
+            -v ${{ github.workspace }}/engine/workflows:/home/sawectl/workflows
             seyoawe-cli:ci
 
           echo "Waiting for CLI ttyd..."
@@ -129,7 +129,7 @@ jobs:
 
       - name: Stop CLI container
         run: |
-          docker rm -f seyoawe-cli-ci
+          docker rm -f seyoawe-cli
       
       - name: Upload CLI allure results
         if: always()
