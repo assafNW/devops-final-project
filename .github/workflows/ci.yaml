@@ -35,6 +35,13 @@ jobs:
             -t seyoawe-engine:ci \
             . 
       
+      - name: Prepare app_data permissions
+        run: |
+          mkdir -p app_data/logs
+          mkdir -p app_data/lifetimes
+
+          chmod -R 777 app_data
+
       - name: Run engine container
         run: | 
           docker run -d \
@@ -54,8 +61,8 @@ jobs:
             sleep 2
           done
       
-      - name: Debug engine crash
-        run: docker logs seyoawe-engine-ci
+      # - name: Debug engine crash
+      #   run: docker logs seyoawe-engine-ci
 
       - name: Debug webform directory
         run: |
