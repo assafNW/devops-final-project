@@ -48,7 +48,7 @@ jobs:
             seyoawe-engine:ci
 
           echo "Waiting for engine health endpoint..."
-          for i in $(seq 1 30); do
+          for i in $(seq 1 1); do
             curl -sf http://localhost:9000/ && break
             echo "Attempt $i/30 - engine is not ready yet"
             sleep 2
