@@ -1,0 +1,43 @@
+
+        Usage: sawectl <command> [options]
+
+        SeyoAWE CLI Tool — Workflow Automation for Humans.
+
+        Available commands:
+
+        init workflow         Create a new workflow (minimal or full template)
+        init module           Scaffold a new module with manifest, code, and usage reference
+        run                   Trigger an ad-hoc workflow against a running SeyoAWE engine
+        validate-workflow     Deep-validate a workflow against schema and module manifests
+        validate-modules      Validate all module.yaml manifests in the modules directory
+
+        Options for `init workflow`:
+        --full                        Generate a full workflow based on module usage and schema
+        --minimal                     Generate a minimal stub workflow (default)
+        --modules <csv>              Comma-separated list of module names to include (default: all)
+        --modules-path <dir>         Path to modules directory (default: ./modules)
+        --workflows-path <dir>       Output path for workflow files (default: ./workflows)
+        --trigger <type>             Trigger type (api | git | scheduled | ad-hoc)
+
+        Options for `run`:
+        --workflow <file>            Path to a workflow YAML file
+        --server <host:port>         Address of the SeyoAWE server (e.g., localhost:8080)
+
+        Options for `validate-workflow`:
+        --workflow <file>            Workflow file to validate
+        --modules <dir>              Path to modules directory (default: ./modules)
+        --verbose                    Print detailed validation output
+
+        Options for `validate-modules`:
+        --modules <dir>              Path to modules directory (default: ./modules)
+
+        Examples:
+
+        sawectl init module slack_module
+        sawectl init workflow my_workflow --full --modules slack_module,email_module
+        sawectl run --workflow workflows/my_workflow.yaml --server localhost:8080
+        sawectl validate-workflow --workflow workflows/my_workflow.yaml --verbose
+        sawectl validate-modules
+
+        Documentation → https://seyoawe.dev/docs
+        
