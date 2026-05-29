@@ -37,10 +37,7 @@ jobs:
       
       - name: Prepare app_data permissions
         run: |
-          mkdir -p app_data/logs
-          mkdir -p app_data/lifetimes
-
-          chmod -R 777 app_data
+          chmod -R 777 ${{ github.workspace }}/app_data
 
       - name: Run engine container
         run: | 
@@ -60,14 +57,6 @@ jobs:
             echo "Attempt $i/30 - engine is not ready yet"
             sleep 2
           done
-      
-      # - name: Debug engine crash
-      #   run: docker logs seyoawe-engine-ci
-
-      - name: Debug webform directory
-        run: |
-          ls -R ${{ github.workspace }}/engine/modules/webform
-          docker exec seyoawe-engine-ci ls -R /app/modules/webform
 
       - name: Run engine unit tests
         run: |
@@ -177,6 +166,10 @@ jobs:
           docker build -f ./docker/engine/Dockerfile -t seyoawe-engine:ci .
           docker build -f ./docker/cli/Dockerfile -t seyoawe-cli:ci .
         
+      - name: Prepare app_data permissions
+        run: |
+          chmod -R 777 ${{ github.workspace }}/app_data
+
       - name: Start full app stack
         run: 
           docker network create seyoawe-ci
@@ -202,8 +195,8 @@ jobs:
             seyoawe-cli:ci
         
           echo "Waiting for engine..."
-          for i in $(sew 1 in 30); do
-            curl -sf http://localhost:8080/health && break; 
+          for i in $(seq 1 in 30); do
+            curl -sf http://localhost:9000 && break; 
             sleep 2
           done
 
