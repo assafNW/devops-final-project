@@ -1,1 +1,1 @@
-/mnt/c/Users/Assaf25025/Documents/MEGA/מסמכים/Surface/DevOps Course/Final Project/engine/modules/webform/build/dist/webform_bundle.js
+./build/dist/webform_bundle.js
