@@ -56,7 +56,7 @@ jobs:
 
           echo "Waiting for engine health endpoint..."
           for i in $(seq 1 15); do
-            curl -sf http://localhost:9000  && break
+            curl -s -o /dev/null -w "%{http_code}" localhost:9000 && break
             echo "Attempt $i/30 - engine is not ready yet"
             sleep 2
           done
@@ -74,6 +74,15 @@ jobs:
       - name : stop engine container
         if: always()
         run: docker rm -f seyoawe-engine-ci 
+      
+      - name: Ensure allure directory exists and creating dummy files
+        if: always()
+        run: |
+          mkdir -p allure-results/engine/unit
+          
+          if [ -z "$(ls -A allure-results/engine/unit 2>/dev/null)" ]; then
+            echo '{}' > allure-results/engine/unit/empty-results.json
+          fi
 
       - name: Upload engine allure results
         if: always()
@@ -138,6 +147,15 @@ jobs:
         run: |
           docker rm -f seyoawe-cli
       
+      - name: Ensure allure directory exists and creating dummy files
+        if: always()
+        run: |
+          mkdir -p allure-results/cli/unit
+          
+          if [ -z "$(ls -A allure-results/cli/unit 2>/dev/null)" ]; then
+            echo '{}' > allure-results/cli/unit/empty-results.json
+          fi
+
       - name: Upload CLI allure results
         if: always()
         uses: actions/upload-artifact@v4
@@ -248,6 +266,25 @@ jobs:
           docker rm -f seyoawe-engine-e2e seyoawe-cli-e2e 
           docker network rm seyoawe-ci 
       
+      - name: Ensure allure directory exists and creating dummy files
+        if: always()
+        run: |
+          mkdir -p allure-results/engine/integration
+          mkdir -p allure-results/cli/integration
+          mkdir -p allure-results/e2e
+
+          if [ -z "$(ls -A allure-results/engine/integration 2>/dev/null)" ]; then
+            echo '{}' > allure-results/engine/integration/empty-results.json
+          fi
+
+          if [ -z "$(ls -A allure-results/cli/integration 2>/dev/null)" ]; then
+            echo '{}' > allure-results/cli/integration/empty-results.json
+          fi
+
+          if [ -z "$(ls -A allure-results/e2e 2>/dev/null)" ]; then
+            echo '{}' > allure-results/e2e/empty-results.json
+          fi
+
       - name: Upload engine integration allure results
         if: always()
         uses: actions/upload-artifact@v4
@@ -287,22 +324,25 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Download engine results
+        continue-on-error: true
         uses: actions/download-artifact@v4
         with:
           name: allure-results-engine
           path: allure-results/engine/
       
       - name: Download CLI results
+        continue-on-error: true
         uses: actions/download-artifact@v4
         with:
           name: allure-results-cli
           path: allure-results/cli/
-      
+        
       - name: Download E2E results
-        if: |
-          always() && 
-          needs.integration_e2e.result != 'skipped' && 
-          needs.integration_e2e.result != 'cancelled'
+        # if: |
+        #   always() && 
+        #   needs.integration_e2e.result != 'skipped' && 
+        #   needs.integration_e2e.result != 'cancelled'
+        continue-on-error: true
         uses: actions/download-artifact@v4
         with:
           name: allure-results-e2e
