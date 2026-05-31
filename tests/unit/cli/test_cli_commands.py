@@ -4,10 +4,10 @@ import pytest
 @pytest.mark.unit
 class TestCLICommands:
 
-    def test_prompt(self):
+    def test_version(self):
         result = subprocess.run([
             "docker", "exec", "seyoawe-cli",
-            "sawectl",
+            "sawectl", "--version"
         ], capture_output=True, text=True)
 
         assert result.returncode == 0

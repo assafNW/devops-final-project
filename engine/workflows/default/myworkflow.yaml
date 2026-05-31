@@ -12,10 +12,10 @@
 workflow:
   name: myworkflow
   trigger:
-    type: api
+    type: ad-hoc
   steps:
   - id: step1
     type: action
     action: logger.run
     input:
-      param1: Hello, world!
+      param1: "Hello, world!"

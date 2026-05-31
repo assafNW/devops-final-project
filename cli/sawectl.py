@@ -374,12 +374,23 @@ def init_module_from_schema(args):
 
 def run_workflow(args):
     workflow = load_yaml(args.workflow)
+    workflow_root = workflow.get("workflow", workflow)
+    workflow_name = workflow_root.get("name")
+    customer_id = os.environ.get("SEYOAWE_CUSTOMER_ID", "default")
     try:
         res = requests.post(
             f"http://{args.server}/api/adhoc",
             json={"workflow": workflow},
             timeout=10
         )
+        if res.status_code == 404 and workflow_name:
+            fallback_url = f"http://{args.server}/api/{customer_id}/{workflow_name}"
+            res = requests.post(
+                fallback_url,
+                json={},
+                headers={"Content-Type": "application/json"},
+                timeout=10
+            )
         res.raise_for_status()
         print(f"[SUCCESS] Workflow triggered. Response: {res.json()}")
     except Exception as e:
