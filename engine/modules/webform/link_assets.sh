@@ -17,8 +17,8 @@ fi
 cd "$SCRIPT_DIR"
 
 for item in webform_bundle.js webform_bundle.css custom.css configs; do
-  if [ -e "$DIST/$item" ]; then
-    ln -sfn "$DIST/$item" "$item" 2>/dev/null || cp -r "$DIST/$item" "$item"
+  if [[ -e "$DIST/$item" &&  ! -f "$SCRIPT_DIR/$item" ]]; then
+    cp -r "$DIST/$item" "$item"
     echo "Linked $item"
   fi
 done
