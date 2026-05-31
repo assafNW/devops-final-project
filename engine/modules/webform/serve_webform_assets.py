@@ -8,8 +8,8 @@ def main() -> None:
     module_dir = Path(__file__).resolve().parent
     os.chdir(module_dir)
     port = int(os.environ.get("WEBFORM_ASSETS_PORT", "9000"))
-    server = ThreadingHTTPServer(("127.0.0.1", port), SimpleHTTPRequestHandler)
-    print(f"[webform-assets] Serving {module_dir} on http://127.0.0.1:{port}")
+    server = ThreadingHTTPServer(("0.0.0.0", port), SimpleHTTPRequestHandler)
+    print(f"[webform-assets] Serving {module_dir} on http://0.0.0.0:{port}")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
