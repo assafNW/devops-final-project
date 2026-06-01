@@ -217,7 +217,7 @@ jobs:
             -p 8081:8081 \
             -v ./engine/modules:/home/sawectl/modules/ \
             -v ./engine/workflows:/home/sawectl/workflows \
-            -e SEYOAWE_ENGINE_URL=http://seyoawe-engine-e2e:8080 \
+            -e ENGINE_URL=seyoawe-engine:8080 \
             seyoawe-cli:ci
         
           echo "Waiting for engine..."
