@@ -182,6 +182,7 @@ jobs:
       - name: Install test dependencies
         run: |
           pip install -r tests/requirements-test.txt
+          python -m playwright install --with-deps
       
       - name: Build docker images for engine and CLI
         run: |
