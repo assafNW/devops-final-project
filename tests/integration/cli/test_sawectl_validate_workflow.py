@@ -8,7 +8,7 @@ class TestSawectlWorkflowValidation:
         result = subprocess.run([
             "docker", "exec", "seyoawe-cli",
             "sawectl", "validate-workflow",
-            "--workflow", "workflows/default/hello_logger.yaml"
+            "--workflow", "workflows/default/hello-logger.yaml"
         ])
 
         assert result.returncode == 0
