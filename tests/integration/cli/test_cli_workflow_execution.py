@@ -2,7 +2,7 @@ import subprocess
 import pytest
 import os
 
-ENGINE_URL = os.getenv("ENGINE_URL", "http://seyoawe-engine:8080")
+ENGINE_URL = os.getenv("ENGINE_URL", "seyoawe-engine:8080")
 
 @pytest.mark.integration
 class TestCLIWorkflowExecution:
