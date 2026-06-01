@@ -1,0 +1,1 @@
+[ERROR] Failed to trigger workflow: 404 Client Error: NOT FOUND for url: http://seyoawe-engine:8080/api/default/hello-logger
