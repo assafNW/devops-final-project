@@ -12,7 +12,7 @@ class TestCLIEngineConnection:
         result = subprocess.run([
             "docker", "exec", "seyoawe-cli",
             "sawectl", "run",
-            "--workflow", "workflows/default/hello-world.yaml",
+            "--workflow", "workflows/default/hello-world",
             "--server", f"{ENGINE_URL}"
         ], capture_output=True, text=True)
 
