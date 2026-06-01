@@ -51,7 +51,7 @@ jobs:
         id: tf_outputs
         working-directory: ${{ env.TF_WORKING_DIR }}
         run: |
-          echo "cluster_name=$(terraform output -raw cluster_name)" >> $GITHUB_OUTPUT
+          echo "cluster_name=$(terraform output -raw eks_cluster_name)" >> $GITHUB_OUTPUT
           echo "efs_id=$(terraform output -raw efs_id)" >> $GITHUB_OUTPUT
 
   # Deploy to AWS EKS via Ansible
