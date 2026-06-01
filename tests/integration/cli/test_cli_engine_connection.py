@@ -9,7 +9,7 @@ class TestCLIEngineConnection:
             "docker", "exec", "seyoawe-cli",
             "sawectl", "run",
             "--workflow", "workflows/default/hello-world.yaml",
-            "--server", "ENGINE_URL:8080"
+            "--server", "$ENGINE_URL:8080"
         ], capture_output=True, text=True)
 
         assert result.returncode == 0
