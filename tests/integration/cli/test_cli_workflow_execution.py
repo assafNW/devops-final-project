@@ -1,5 +1,8 @@
 import subprocess
 import pytest
+import os
+
+ENGINE_URL = os.getenv("ENGINE_URL", "http://seyoawe-engine:8080")
 
 @pytest.mark.integration
 class TestCLIWorkflowExecution:
@@ -9,7 +12,7 @@ class TestCLIWorkflowExecution:
             "docker", "exec", "seyoawe-cli",
             "sawectl", "run",
             "--workflow", "workflows/default/hello_logger.yaml",
-            "--server", "$ENGINE_URL:8080"
+            "--server", f"{ENGINE_URL}"
         ])
 
         assert result.returncode == 0
