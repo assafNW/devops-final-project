@@ -16,6 +16,9 @@ aws_region: "us-east-2"
 app_namespace: "seyoawe"
 monitoring_namespace: "monitoring"
 
+# Repository root path:
+repo_root: "{{ lookup('env', 'GITHUB_WORKSPACE') }}"
+
 # Helm release names:
 app_release_name: "seyoawe"
 monitoring_release_name: "seyoawe-monitoring"
