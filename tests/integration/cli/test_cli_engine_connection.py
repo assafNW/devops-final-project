@@ -3,7 +3,7 @@ import pytest
 import os
 
 
-# ENGINE_URL = os.getenv("ENGINE_URL", "seyoawe-engine:8080")
+ENGINE_URL = os.getenv("ENGINE_URL", "seyoawe-engine:8080")
 
 @pytest.mark.integration
 class TestCLIEngineConnection:
@@ -13,7 +13,7 @@ class TestCLIEngineConnection:
             "docker", "exec", "seyoawe-cli",
             "sawectl", "run",
             "--workflow", "workflows/default/hello-world.yaml",
-            "--server", "$ENGINE_URL"
+            "--server", f"{ENGINE_URL}"
         ], capture_output=True, text=True)
 
         assert result.returncode == 0
