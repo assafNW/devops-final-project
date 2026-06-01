@@ -23,6 +23,10 @@ module "eks" {
   node_desired_count = var.node_desired_count
   node_min_count = var.node_min_count
   node_max_count = var.node_max_count
+
+  depends_on = [
+    module.vpc
+  ]
 }
 
 # Deploy EKS module
@@ -35,4 +39,7 @@ module "efs" {
   eks_node_sg_id = module.eks.node_sg_id
   cluster_name = module.eks.cluster_name
   
+  depends_on = [
+    module.eks
+  ]
 }

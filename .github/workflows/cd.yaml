@@ -143,29 +143,6 @@ jobs:
       )
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with: 
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
-
-      # - name: Setup Terraform
-      #   uses: hashicorp/setup-terraform@v3
-      #   with: 
-      #     terraform_wrapper: false
-
-      # - name: Terraform Init
-      #   working-directory: ${{ env.TF_WORKING_DIR }}
-      #   run: terraform init
-
-      # - name: Terraform Destroy
-      #   working-directory: ${{ env.TF_WORKING_DIR }}
-      #   run: terraform destroy --auto-approve
-
       - name: Login to Jira
         uses: atlassian/gajira-login@v3
         env:
@@ -174,7 +151,6 @@ jobs:
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
 
       - name: Open Jira bug ticket
-        if: always()
         uses: atlassian/gajira-create@v3
         env:
           JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
@@ -194,7 +170,6 @@ jobs:
             CD failed on run #${{ github.run_number}}.
 
       - name: Send failure email
-        if: always()
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: ${{ secrets.SMTP_SERVER }}

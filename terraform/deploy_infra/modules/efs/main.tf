@@ -51,7 +51,6 @@ resource "aws_efs_mount_target" "seyoawe" {
 resource "aws_eks_addon" "efs_csi" {
   cluster_name = var.cluster_name
   addon_name = var.efs_csi_addon_name
-  addon_version = var.efs_csi_version
   resolve_conflicts_on_create = "OVERWRITE"
 
   depends_on = [ aws_efs_mount_target.seyoawe ]
