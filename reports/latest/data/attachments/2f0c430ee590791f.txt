@@ -1,0 +1,1 @@
+[ERROR] Failed to trigger workflow: HTTPConnectionPool(host='localhost', port=8080): Max retries exceeded with url: /api/adhoc (Caused by NewConnectionError("HTTPConnection(host='localhost', port=8080): Failed to establish a new connection: [Errno 111] Connection refused"))
