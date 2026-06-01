@@ -258,10 +258,6 @@ jobs:
         if: failure()
         run: |
           docker logs seyoawe-engine
-
-      - name: Dump engine routes
-        if: failure()
-        run: docker exec seyoawe-engine flask routes
       
       - name: Verify workflows exist
         if: failure()
