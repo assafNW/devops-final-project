@@ -7,8 +7,10 @@ class TestLogsRuntime:
 
     def test_logs_written(self, engine_ready):
         # trigger any request
-        requests.get("http://localhost:8080/health")
-
+        requests.post(
+            "http://localhost:8080/api/default/hello-world",
+            json={}
+        )
         log_dir = Path("logs")
         assert log_dir.exists()
         assert any(log_dir.iterdir())

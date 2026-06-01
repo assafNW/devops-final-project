@@ -3,7 +3,7 @@ import requests
 
 @pytest.fixture(scope="session")
 def engine_ready():
-    assert requests.get("http://localhost:8080/health").status_code == 200
+    assert requests.get("http://localhost:9000").status_code == 200
     return True
 
 

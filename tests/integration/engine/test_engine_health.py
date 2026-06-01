@@ -5,5 +5,5 @@ import pytest
 class TestEngineHealth:
 
     def test_health(self, engine_ready):
-        r = requests.get("http://localhost:8080/health")
+        r = requests.get("http://localhost:9000")
         assert r.status_code == 200
