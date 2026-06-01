@@ -1,0 +1,1 @@
+[ERROR] Failed to trigger workflow: HTTPConnectionPool(host='engine_url', port=8080): Max retries exceeded with url: /api/adhoc (Caused by NameResolutionError("HTTPConnection(host='engine_url', port=8080): Failed to resolve 'engine_url' ([Errno -3] Temporary failure in name resolution)"))
