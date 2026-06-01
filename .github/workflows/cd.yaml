@@ -174,6 +174,7 @@ jobs:
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
 
       - name: Open Jira bug ticket
+        if: always()
         uses: atlassian/gajira-create@v3
         env:
           JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
@@ -193,6 +194,7 @@ jobs:
             CD failed on run #${{ github.run_number}}.
 
       - name: Send failure email
+        if: always()
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: ${{ secrets.SMTP_SERVER }}
