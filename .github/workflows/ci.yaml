@@ -464,13 +464,6 @@ jobs:
             ${{ secrets.DOCKERHUB_USER }}/seyoawe-cli:${{ env.APP_VERSION }}
             ${{ secrets.DOCKERHUB_USER }}/seyoawe-cli:latest
       
-      - name: Push git version tag
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@noreply.com"
-          git tag -a "${{ env.APP_VERSION }}" -m "Release v${{ env.APP_VERSION }}"
-          git push origin "${{ env.APP_VERSION }}"
-      
       - name: Send success email
         uses: dawidd6/action-send-mail@v3
         with:
