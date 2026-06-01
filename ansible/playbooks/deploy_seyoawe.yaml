@@ -15,6 +15,9 @@
   hosts: local
   gather_facts: false
 
+  vars_files:
+    - "{{ playbook_dir }}/../group_vars/all/main.yaml"
+
   roles:
       # Install all needed dependencies: kubectl, aws cli, helm
     - role: dependencies
