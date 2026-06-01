@@ -5,11 +5,11 @@ on:
 
 env: 
   AWS_REGION: us-east-2
-  TF_WORKING_DIR: terraform/remote_state_table
+  TF_WORKING_DIR: terraform/deploy_infra
 
 jobs:
   terraform:
-    name: Terraform Apply
+    name: Terraform Destroy
     runs-on: ubuntu-latest
 
     steps:
