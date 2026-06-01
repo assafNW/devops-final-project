@@ -4,14 +4,14 @@
 # run this command to run the playbook:
 #   ansible-playbook playbooks/deploy_seyoawe.yaml \
 #     -i inventory/hosts.ini \
-#     -e "environment=prod"
+#     -e "deploy_env=prod"
 #
-# The following environment variables should be provided by github actions:
+# The following deploy_env variables should be provided by github actions:
 #  APP_VERSION - the new version that added via github tag
 #  TF_OUTPUT_CLUSTER_NAME - from terraform output
 
 
-- name: Deploy seyoawe to {{ environment }}
+- name: Deploy seyoawe to {{ deploy_env | default('prod') }}
   hosts: local
   gather_facts: false
 

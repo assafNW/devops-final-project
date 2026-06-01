@@ -1,12 +1,12 @@
 ---
 # Variables which are shared across the roles.
 
-environment: "prod"
+deploy_env: "prod"
 # app_host: "prod.seyoawe.example.com"
 # grafana_host: "grafana.prod.seyoawe.example.com"
 
 # Tool Versions
-kubectl_version: "1.29.0"
+kubectl_version: "1.31.0"
 helm_version: "3.14.0"
 
 # AWS

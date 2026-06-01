@@ -3,13 +3,13 @@
 # run the command line:
 # ansible-playbook playbook/deploy_monitoring.yaml \
 #   -i inventory/hosts.ini
-#   -e "environment=prod"
+#   -e "deploy_env=prod"
 #
-# The following environment variables should be provided by github actions:
+# The following deploy_env variables should be provided by github actions:
 #  TF_OUTPUT_CLUSTER_NAME --from terraform output
 #  GRAFANA_PASSWORD --from repo secrets
 
-- name: Deploy monitoring stack to {{ environment }}
+- name: Deploy monitoring stack to {{ deploy_env | default('prod') }}
   hosts: local
   gather_facts: false
 
