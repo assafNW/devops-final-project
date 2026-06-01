@@ -11,7 +11,7 @@ class TestCLIWorkflowExecution:
         result = subprocess.run([
             "docker", "exec", "seyoawe-cli",
             "sawectl", "run",
-            "--workflow", "workflows/default/hello_logger",
+            "--workflow", "workflows/default/hello_logger.yaml",
             "--server", f"{ENGINE_URL}"
         ])
 
