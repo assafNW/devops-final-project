@@ -260,10 +260,10 @@ jobs:
         run: |
           docker logs seyoawe-engine
       
-      - name: Verify workflows exist
+      - name: Debug cli failure
         if: failure()
         run: |
-          docker exec seyoawe-engine ls -R /app/workflows
+          docker logs seyoawe-cli
       
       - name: Stop seyoawe app stack
         if: always()
@@ -429,14 +429,14 @@ jobs:
 
       - name: Bump version and push tag
         id: tagger
-        uses: anothrNick/github-tag-actions@1.71.0
+        uses: anothrNick/github-tag-action@1.71.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
           WITH_V: true
       
       - name: Set version in environment
-        run: echo "APP_VERSION=${{ steps.tagger.output.new_tag }}" >> $GITHUB_ENV
+        run: echo "APP_VERSION=${{ steps.tagger.outputs.new_tag }}" >> $GITHUB_ENV
       
       - name: Login to Dockerhub
         uses: docker/login-action@v3
@@ -500,9 +500,9 @@ jobs:
     if: |
       always() && 
       (
-      needs.engine.results != 'success' ||
-      needs.cli.results != 'success' ||
-      needs.integration_e2e.results != 'success'
+      needs.engine.result != 'success' ||
+      needs.cli.result != 'success' ||
+      needs.integration_e2e.result != 'success'
       )
 
     steps:
