@@ -9,7 +9,7 @@ class TestCLIWorkflowExecution:
             "docker", "exec", "seyoawe-cli",
             "sawectl", "run",
             "--workflow", "workflows/default/hello_logger.yaml",
-            "--server", "engine:8080"
+            "--server", "ENGINE_URL:8080"
         ])
 
         assert result.returncode == 0

@@ -168,7 +168,9 @@ jobs:
     name: Integration and E2E Tests
     runs-on: ubuntu-latest
     needs: [engine,cli]
-
+    env:
+      ENGINE_URL: http://seyoawe-engine:8080
+      CLI_URL: http://seyoawe-cli:8081
     steps: 
       - name: Git Checkout
         uses: actions/checkout@v4
@@ -237,8 +239,6 @@ jobs:
             --alluredir allure-results/engine/integration \
             --tb=short \
             -v
-        env:
-          ENGINE_URL: http://localhost:8080
 
       - name: Run CLI integration tests
         run: |
@@ -247,8 +247,6 @@ jobs:
             --alluredir allure-results/cli/integration \
             --tb=short \
             -v
-        env:
-          CLI_URL: http://localhost:8081
 
       - name: Run E2E tests
         run: |
@@ -256,9 +254,6 @@ jobs:
             --alluredir allure-results/e2e \
             --tb=short \
             -v
-        env:
-          ENGINE_URL: http://localhost:8080
-          CLI_URL: http://localhost:8081
       
       - name: Stop seyoawe app stack
         if: always()
