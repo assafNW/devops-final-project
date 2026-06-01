@@ -87,6 +87,11 @@ jobs:
       - name: Install Ansible
         run: pip install ansible
 
+      - name: Debug Terraform outputs
+        run: |
+          echo "TF_OUTPUT_CLUSTER_NAME=[$TF_OUTPUT_CLUSTER_NAME]"
+          echo "TF_OUTPUT_EFS_ID=[$TF_OUTPUT_EFS_ID]"
+
       - name: Deploy SeyoAWE app
         run: |
           ansible-playbook  ansible/playbooks/deploy_seyoawe.yaml \

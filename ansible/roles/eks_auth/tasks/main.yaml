@@ -4,6 +4,11 @@
 # aws-actions/configure-aws-credentials before 
 # running ansible
 ---
+- name: Debug cluster name
+  debug:
+    msg:
+      - "cluster_name={{ cluster_name }}"
+      - "aws_region={{ aws_region }}"
 
 - name: Update kubeconfig for EKS cluster {{ cluster_name }}
   command: >
