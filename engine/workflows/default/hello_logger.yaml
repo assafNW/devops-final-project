@@ -10,7 +10,7 @@
         # =============================================
         
 workflow:
-  name: myworkflow
+  name: hello-logger
   trigger:
     type: ad-hoc
   steps:
