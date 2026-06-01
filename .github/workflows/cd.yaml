@@ -12,6 +12,7 @@ on:
 env: 
   AWS_REGION: us-east-2
   TF_WORKING_DIR: terraform/deploy_infra
+  ANSIBLE_CONFIG: ansible/ansible.cfg
 
 jobs:
   terraform:
@@ -19,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     # if: ${{ github.event.workflow_run.conclusion == 'success' }}
     outputs:
-      cluster_name: ${{ steps.tf_outputs.outputs.cluster_name }}
+      cluster_name: ${{ steps.tf_outputs.outputs.eks_cluster_name }}
       efs_id: ${{ steps.tf_outputs.outputs.efs_id }}
 
     steps:
