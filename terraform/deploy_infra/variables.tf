@@ -49,7 +49,7 @@ variable "availability_zones" {
 variable "eks_cluster_version" {
   description = "K8s versions for EKS cluster"
   type = string
-  default = "1.32"
+  default = "1.31"
 }
 
 variable "node_instance_type" {
