@@ -14,7 +14,8 @@ jobs:
   engine:
     name: Engine CI
     runs-on: ubuntu-latest
-
+    env:
+      ENGINE_URL: http://localhost:8080
     steps:
       - name: Git Checkout
         uses: actions/checkout@v4
@@ -68,8 +69,6 @@ jobs:
             --alluredir allure-results/engine/unit \
             --tb=short \
             -v
-        env:
-          ENGINE_URL: http://localhost:8080
       
       - name : stop engine container
         if: always()
@@ -96,6 +95,8 @@ jobs:
   cli:
     name: CLI CI
     runs-on: ubuntu-latest
+    env: 
+      CLI_URL: http://localhost:8081
 
     steps:
       - name: Git Checkout
@@ -140,8 +141,6 @@ jobs:
             --alluredir allure-results/cli/unit \
             --tb=short \
             -v
-        env: 
-          CLI_URL: http://localhost:8081
 
       - name: Stop CLI container
         run: |
