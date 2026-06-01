@@ -67,6 +67,9 @@ allure-report/
 engine/lifetimes/completed/*
 !engine/lifetimes/completed/
 
+app_data/lifetimes/completed/*
+!app_data/lifetimes/completed/
+
 *.log
 pip-log.txt
 pip-delete-this-directory.txt
