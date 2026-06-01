@@ -253,13 +253,23 @@ jobs:
             --alluredir allure-results/e2e \
             --tb=short \
             -v
+
+      - name: Debug engine failure
+        if: failure()
+        run: |
+          docker logs seyoawe-engine
+      
+      - name: Verify workflows exist
+        if: failure()
+        run: |
+          docker exec seyoawe-engine ls -R /app/workflows
       
       - name: Stop seyoawe app stack
         if: always()
         run: | 
           docker rm -f seyoawe-engine seyoawe-cli 
           docker network rm seyoawe-ci 
-      
+
       - name: Ensure allure directory exists and creating dummy files
         if: always()
         run: |
