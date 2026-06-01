@@ -355,18 +355,18 @@ jobs:
           path: allure-results
           merge-multiple: true
           
-      # - name: Merge all results into one directory
-      #   run: |
-      #     mkdir -p allure-results-merged
-      #     find allure-results -type f \
-      #       \( -name "*.json" -o -name "*.txt" -o -name "*.xml" \) \
-      #       -exec cp {} allure-results-merged/ \;
-      #     mkdir -p allure-results-merged/history
-      #     if [ -d "allure-results/history" ]; then
-      #       cp -r allure-results/history/* allure-results-merged/history/ || true
-      #     fi
-      #     echo "Merged files:"
-      #     ls -lah allure-results-merged
+      - name: Merge all results into one directory
+        run: |
+          mkdir -p allure-results-merged
+          find allure-results -type f \
+            \( -name "*.json" -o -name "*.txt" -o -name "*.xml" \) \
+            -exec cp {} allure-results-merged/ \;
+          mkdir -p allure-results-merged/history
+          if [ -d "allure-results/history" ]; then
+            cp -r allure-results/history/* allure-results-merged/history/ || true
+          fi
+          echo "Merged files:"
+          ls -lah allure-results-merged
                     
       - name: Install Allure CLI
         run: |
