@@ -1,0 +1,1 @@
+[ERROR] Failed to trigger workflow: 500 Server Error: INTERNAL SERVER ERROR for url: http://seyoawe-engine:8080/api/default/hello-logger
