@@ -68,7 +68,8 @@ engine/lifetimes/completed/*
 !engine/lifetimes/completed/
 
 app_data/lifetimes/completed/*
-!app_data/lifetimes/completed/
+
+app_data/*
 
 *.log
 pip-log.txt
