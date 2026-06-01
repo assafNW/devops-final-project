@@ -65,7 +65,7 @@ jobs:
       grafana_url: ${{ steps.deploy_monitoring.outputs.grafana_url }}
 
     env: 
-      TF_OUTPUT_CLUSTER_NAME: ${{ needs.terraform.outputs.cluster_name }}
+      TF_OUTPUT_CLUSTER_NAME: ${{ needs.terraform.outputs.eks_cluster_name }}
       TF_OUTPUT_EFS_ID: ${{ needs.terraform.outputs.efs_id }}
       DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USER }}
       GRAFANA_PASSWORD: ${{ secrets.GRAFANA_PASSWORD }}
