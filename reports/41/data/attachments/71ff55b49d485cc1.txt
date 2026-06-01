@@ -1,0 +1,1 @@
+[ERROR] Failed to trigger workflow: HTTPConnectionPool(host='http', port=80): Max retries exceeded with url: //seyoawe-engine:8080/api/adhoc (Caused by NameResolutionError("HTTPConnection(host='http', port=80): Failed to resolve 'http' ([Errno -3] Temporary failure in name resolution)"))
