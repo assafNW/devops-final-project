@@ -5,11 +5,11 @@
 # running ansible
 ---
 
-- name: Update kubeconfig for EKS cluster {{ cluster_name }}
+- name: Update kubeconfig for EKS cluster {{ eks_cluster_name }}
   command: >
     aws eks update-kubeconfig
     --region {{ aws_region }}
-    --name {{ cluster_name }}
+    --name {{ eks_cluster_name }}
   changed_when: false
 
 - name: Verify cluster connectivity
