@@ -199,7 +199,7 @@ jobs:
           docker network create seyoawe-ci
 
           docker run -d \
-            --name seyoawe-engine-e2e \
+            --name seyoawe-engine \
             --network seyoawe-ci \
             -p 8080:8080 \
             -p 9000:9000 \
@@ -210,7 +210,7 @@ jobs:
             seyoawe-engine:ci
 
           docker run -d \
-            --name seyoawe-cli-e2e \
+            --name seyoawe-cli \
             --network seyoawe-ci \
             -p 8081:8081 \
             -v ./engine/modules:/home/sawectl/modules/ \
@@ -263,7 +263,7 @@ jobs:
       - name: Stop seyoawe app stack
         if: always()
         run: | 
-          docker rm -f seyoawe-engine-e2e seyoawe-cli-e2e 
+          docker rm -f seyoawe-engine seyoawe-cli 
           docker network rm seyoawe-ci 
       
       - name: Ensure allure directory exists and creating dummy files
