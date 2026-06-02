@@ -1,3 +1,8 @@
+### To build internal network for connection between engine and cli:
+```bash
+docker network create seyoawe-ci
+```
+
 ### To build the docker image project's root folder:
 ```bash
 docker build -f docker/engine/Dockerfile -t seyoawe-engine:1.0.0 .
@@ -12,6 +17,7 @@ docker run -d \
     -v ./app_data/lifetimes:/app/lifetimes \
     -v ./engine/modules:/app/modules/ \
     -v ./engine/workflows:/app/workflows \
+    --network seyoawe-ci \
     --name seyoawe-engine \
     seyoawe-engine:1.0.0
 ```

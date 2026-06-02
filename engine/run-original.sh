@@ -10,9 +10,9 @@ fi
 # Start the webform asset server on port 9000 (serves JS/CSS for the
 # webform UI at :8080). Set WEBFORM_ASSETS=0 to disable.
 if [ "${WEBFORM_ASSETS:-1}" != "0" ]; then
-  if [ -f modules-src/webform/serve_webform_assets.py ]; then
+  if [ -f modules/webform/serve_webform_assets.py ]; then
     echo "Starting webform asset server on :9000..."
-    python3 modules-src/webform/serve_webform_assets.py &
+    python3 modules/webform/serve_webform_assets.py &
     ASSET_PID=$!
     trap "kill $ASSET_PID 2>/dev/null" EXIT
   fi

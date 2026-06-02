@@ -36,8 +36,9 @@ VOLUME ["/app/logs", "/app/lifetimes"]
 COPY ./engine/seyoawe.linux /app/seyoawe.linux
 COPY ./engine/run.sh /app/run.sh
 COPY ./engine/configuration/ /app/configuration/
-# COPY ./engine/modules/ /app/modules/
-# COPY ./engine/workflows/ /app/workflows
+# For the 9000 server, using it as health check in k8s, 
+# before the pvc bind to it
+COPY ./engine/modules/webform/ /app/modules-src/webform/
 
 RUN mkdir -p /app/lifetimes \
              /app/logs \
