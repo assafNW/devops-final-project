@@ -18,7 +18,6 @@
     --set engine.image.tag={{ app_version }}
     --set cli.image.repository={{ cli_image_repo }}
     --set cli.image.tag={{ app_version }}
-    --set global.host={{ app_host }} 
     --atomic
     --timeout 5m
     --wait
