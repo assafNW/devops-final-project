@@ -39,7 +39,7 @@ spec:
               protocol: TCP 
           
           envFrom:
-            - configmapRef: 
+            - configMapRef: 
                 name: {{ .Release.Name }}-engine-config
           
           livenessProbe:
