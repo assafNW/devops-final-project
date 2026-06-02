@@ -22,3 +22,7 @@ output "node_group_role_arn" {
 output "node_sg_id" {
   value = aws_security_group.cluster.id
 }
+
+output "cluster_oidc_issuer_url" {
+  value = aws_eks_cluster.main.identity[0].oidc[0].issuer
+}

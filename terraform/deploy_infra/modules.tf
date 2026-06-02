@@ -38,7 +38,8 @@ module "efs" {
   private_subnet_ids = module.vpc.private_subnet_ids
   eks_node_sg_id = module.eks.node_sg_id
   cluster_name = module.eks.cluster_name
-  
+  cluster_oidc_issuer_url = module.eks.cluster_oidc_issuer_url
+    
   depends_on = [
     module.eks
   ]
