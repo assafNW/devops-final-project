@@ -25,12 +25,12 @@ variable "efs_csi_addon_name" {
   default = "aws-efs-csi-driver"
 }
 
-variable "efs_csi_version" {
-  type = string
-  default = "v1.7.6-eksbuild.1"
+variable "oidc_provider_arn" {
+  description = "OIDC provider arn of the EKS cluster"
+  type        = string
 }
 
-variable "cluster_oidc_issuer_url" {
-  description = "OIDC issuer URL of the EKS cluster"
+variable "oidc_provider_url" {
+  description = "OIDC provider url of the EKS cluster"
   type        = string
 }
