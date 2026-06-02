@@ -28,6 +28,7 @@
 - name: Install Helm {{ helm_version }}
   shell: |
     curl -fsSL "https://get.helm.sh/helm-v{{ helm_version }}-linux-amd64.tar.gz" -o /tmp/helm.tar.gz
+    mkdir -p /tmp/helm-install
     tar -xzf /tmp/helm.tar.gz -C /tmp/helm-install
     mv /tmp/helm-install/linux-amd64/helm /usr/local/bin/helm
     rm -rf /tmp/helm-install /tmp/helm.tar.gz
