@@ -20,7 +20,7 @@ output "node_group_role_arn" {
 }
 
 output "node_sg_id" {
-  value = aws_security_group.cluster.id
+  value = aws_eks_cluster.main.vpc_config[0].cluster_security_group_id
 }
 
 output "cluster_oidc_issuer_url" {
