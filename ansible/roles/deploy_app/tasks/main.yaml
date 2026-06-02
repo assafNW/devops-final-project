@@ -19,6 +19,7 @@
     --set cli.image.repository={{ cli_image_repo }}
     --set cli.image.tag={{ app_version }}
     --timeout 5m
+    --atomic
     --wait
 
   register: helm_app_result
@@ -31,16 +32,7 @@
 - name: Print Helm output
   debug:
     msg: "{{ helm_app_result.stdout_lines }}"
-
-- name: Verify local source path exists
-  ansible.builtin.stat:
-    path: "{{ playbook_dir }}/../../engine/{{ item.src }}"
-  loop:
-    - { src: 'modules' }
-    - { src: 'workflows' }
-  register: path_check
-  failed_when: not item.stat.exists
-
+    
 - name: Copy folders via kubectl CLI
   ansible.builtin.command: >
     kubectl cp
