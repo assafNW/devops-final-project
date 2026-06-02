@@ -39,7 +39,24 @@ module "efs" {
   eks_node_sg_id = module.eks.node_sg_id
   cluster_name = module.eks.cluster_name
   cluster_oidc_issuer_url = module.eks.cluster_oidc_issuer_url
-    
+
+  depends_on = [
+    module.eks
+  ]
+}
+
+# Deploy LBC module - Load Balancer
+module "lbc" {
+  source = "./modules/lbc"
+  
+  project_name = var.project_name
+  environment = var.environment
+  vpc_id = module.vpc.vpc_id
+  private_subnet_ids = module.vpc.private_subnet_ids
+  eks_node_sg_id = module.eks.node_sg_id
+  cluster_name = module.eks.cluster_name
+  cluster_oidc_issuer_url = module.eks.cluster_oidc_issuer_url
+  
   depends_on = [
     module.eks
   ]
