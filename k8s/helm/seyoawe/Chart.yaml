@@ -6,9 +6,9 @@ version: 0.1.0
 appVersion: "1.0.0" # will be overriden at deploy by the respective version
 
 dependencies:
-  - name: seyoawe-engine
+  - name: engine
     version: "0.1.0"
     repository: "file://charts/engine"
-  - name: seyoawe-cli
+  - name: cli
     version: "0.1.0"
     repository: "file://charts/cli"

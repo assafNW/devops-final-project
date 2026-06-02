@@ -1,5 +1,5 @@
 apiVersion: v2
-name: seyoawe-engine
+name: engine
 description: Seyoawe engine - stateful workflow runtime
 type: application
 version: 0.1.0
