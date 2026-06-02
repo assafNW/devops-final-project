@@ -10,7 +10,7 @@ spec:
   type: ClusterIP
   selector:
     app: {{ .Release.Name }}-cli
-    port: 
-      - name: ttyd
-        port: {{ .Values.service.port }}
-        targetPort: {{ .Values.service.targetPort }}
+  port: 
+    - name: ttyd
+      port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
