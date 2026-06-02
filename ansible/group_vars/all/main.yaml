@@ -33,7 +33,7 @@ monitoring_chart_path: "k8s/monitoring/seyoawe-monitoring"
 dockerhub_user: "assafnw"
 
 # Image Repositories
-engine_image_repo: "{{ dockerhub_user }}/seyoawe_engine"
+engine_image_repo: "{{ dockerhub_user }}/seyoawe-engine"
 cli_image_repo: "{{ dockerhub_user }}/seyoawe-cli"
 
 # App Version
