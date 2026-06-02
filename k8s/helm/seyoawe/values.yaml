@@ -12,6 +12,7 @@ engine:
   service: 
     port: 80
     targetPort: 8080
+    healthPort: 9000
 
   resources:
     requests:
