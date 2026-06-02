@@ -23,7 +23,7 @@ engine:
       memory: "512Mi"
   
   healthCheck:
-    path: /health
+    path: /
     initialDelaySeconds: 15
     periodSeconds: 20
 
@@ -63,7 +63,7 @@ ingress:
     alb.ingress.kubernetes.io/scheme: "internet-facing"
     alb.ingress.kubernetes.io/target-type: "ip"
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": "80"}]'
-    alb.ingress.kubernetes.io/healthcheck-path: "/health"
+    alb.ingress.kubernetes.io/healthcheck-path: "/"
     alb.ingress.kubernetes.io/healthcheck-interval-seconds: "30"
     alb.ingress.kubernetes.io/success-codes: "200"
     # sticky session for CLI
