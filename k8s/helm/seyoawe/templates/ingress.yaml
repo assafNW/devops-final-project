@@ -19,7 +19,7 @@ spec:
               service:
                 name: {{ .Release.Name }}-engine
                 port:
-                  number: {{ .Values.engine.service.port }}
+                  number: {{ .Values.engine.service.healthPort }}
           
           - path: /api
             pathType: Prefix

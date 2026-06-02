@@ -37,6 +37,9 @@ spec:
             - name: http
               containerPort: {{ .Values.service.targetPort }}
               protocol: TCP 
+            - name: health
+              containerPort: {{ .Values.service.healthPort }}
+              protocol: TCP
           
           envFrom:
             - configMapRef: 
@@ -45,7 +48,7 @@ spec:
           livenessProbe:
             httpGet:
               path: {{ .Values.healthCheck.path }}
-              port: {{ .Values.service.targetPort }}
+              port: {{ .Values.service.healthPort }}
             initialDelaySeconds: {{ .Values.healthCheck.initialDelaySeconds }}
             periodSeconds: {{ .Values.healthCheck.periodSeconds }}
             failureThreshold: 3
@@ -53,7 +56,7 @@ spec:
           readinessProbe:
             httpGet:
               path: {{ .Values.healthCheck.path }}
-              port: {{ .Values.service.targetPort }}
+              port: {{ .Values.service.healthPort }}
             initialDelaySeconds: 10
             periodSeconds: 10
             failureThreshold: 3

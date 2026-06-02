@@ -16,6 +16,9 @@ spec:
     - name: http
       port: {{ .Values.service.targetPort }}
       targetPort: {{ .Values.service.targetPort }} 
+    - name: health
+      port: {{ .Values.service.healthPort }}
+      targetPort: {{ .Values.service.healthPort }}
 
 ---
 # ClusterIP - for in cluster connection for Ingress and CLI
@@ -35,3 +38,6 @@ spec:
     - name: http
       port: {{ .Values.service.port }}
       targetPort: {{ .Values.service.targetPort }}
+    - name: health
+      port: {{ .Values.service.healthPort }}
+      targetPort: {{ .Values.service.healthPort }}
