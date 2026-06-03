@@ -31,7 +31,7 @@ spec:
             component: engine
           annotations:
             summary: "SeyoAWE engine pod restarting repeatedly"
-            description: "Pod {{ $labels.pod }} has restarted more than 3 times in the last 15 minutes."
+            description: "Pod {{`{{ $labels.pod }}`}} has restarted more than 3 times in the last 15 minutes."
         
         # PVC storage is running low
         - alert: SeyoaweEngineStorageLow
@@ -44,33 +44,33 @@ spec:
             component: engine
           annotations:
             summary: "SeyoAWE engine PVC below 15% free"
-            description: "PVC {{ $labels.persistentvolumeclaim }} has less than 15% storage left."
+            description: "PVC {{`{{ $labels.persistentvolumeclaim }}`}} has less than 15% storage left."
         
         # High CPU Usage
         - alert: SeyoaweEngineHighCpuUsage
           expr: |
             rate(container_cpu_usage_seconds_total{namespace="seyoawe", pod=~ "seyoawe-engine-.*", container="engine"}[5m]) 
-            / on(pod) kube_pod_container_resource_limits{namespace="seyoawe", resource="cpu"}) > 0.85
+            / on(pod) kube_pod_container_resource_limits{namespace="seyoawe", resource="cpu"} > 0.85
           for: 10m
           labels: 
             severity: warning
             component: engine
           annotations:
             summary: "SeyoAWE engine CPU above 85% of limit"
-            description: "Pod {{ $labels.pod }} has been using more than 85% of its CPU limit for over 10 minutes."
+            description: "Pod {{`{{ $labels.pod }}`}} has been using more than 85% of its CPU limit for over 10 minutes."
         
         # High Memory Usage
         - alert: SeyoaweEngineHighMemoryUsage
           expr: |
             container_memory_working_set_bytes{namespace="seyoawe", pod=~ "seyoawe-engine-.*", container="engine"}
-            / on(pod) kube_pod_container_resource_limits{namespace="seyoawe", resource="memory"}) > 0.85
+            / on(pod) kube_pod_container_resource_limits{namespace="seyoawe", resource="memory"} > 0.85
           for: 10m
           labels: 
             severity: warning
             component: engine
           annotations:
             summary: "SeyoAWE engine memory above 85% of limit"
-            description: "Pod {{ $labels.pod }} has been using more than 85% of its memory limit for over 10 minutes."
+            description: "Pod {{`{{ $labels.pod }}`}} has been using more than 85% of its memory limit for over 10 minutes."
     
     - name: seyoawe.cli
       interval: 30s
@@ -95,7 +95,7 @@ spec:
             component: cli
           annotations:
             summary: "SeyoAWE cli pod restarting repeatedly"
-            description: "Pod {{ $labels.pod }} has restarted more than 3 times in the last 15 minutes."
+            description: "Pod {{`{{ $labels.pod }}`}} has restarted more than 3 times in the last 15 minutes."
         
         # PVC storage is running low
         - alert: SeyoaweCliStorageLow
@@ -108,30 +108,30 @@ spec:
             component: cli
           annotations:
             summary: "SeyoAWE CLI PVC below 15% free"
-            description: "PVC {{ $labels.persistentvolumeclaim }} has less than 15% storage left."
+            description: "PVC {{`{{ $labels.persistentvolumeclaim }}`}} has less than 15% storage left."
         
         # High CPU Usage
         - alert: SeyoaweCliHighCpuUsage
           expr: |
             rate(container_cpu_usage_seconds_total{namespace="seyoawe", pod=~ "seyoawe-cli-.*", container="cli"}[5m]) 
-            / on(pod) kube_pod_container_resource_limits{namespace="seyoawe", resource="cpu"}) > 0.85
+            / on(pod) kube_pod_container_resource_limits{namespace="seyoawe", resource="cpu"} > 0.85
           for: 10m
           labels: 
             severity: warning
             component: cli
           annotations:
             summary: "SeyoAWE CLI CPU above 85% of limit"
-            description: "Pod {{ $labels.pod }} has been using more than 85% of its CPU limit for over 10 minutes."
+            description: "Pod {{`{{ $labels.pod }}`}} has been using more than 85% of its CPU limit for over 10 minutes."
         
         # High Memory Usage
         - alert: SeyoaweCliHighMemoryUsage
           expr: |
             container_memory_working_set_bytes{namespace="seyoawe", pod=~ "seyoawe-cli-.*", container="cli"}
-            / on(pod) kube_pod_container_resource_limits{namespace="seyoawe", resource="memory"}) > 0.85
+            / on(pod) kube_pod_container_resource_limits{namespace="seyoawe", resource="memory"} > 0.85
           for: 10m
           labels: 
             severity: warning
             component: cli
           annotations:
             summary: "SeyoAWE CLI memory above 85% of limit"
-            description: "Pod {{ $labels.pod }} has been using more than 85% of its memory limit for over 10 minutes."
+            description: "Pod {{`{{ $labels.pod }}`}} has been using more than 85% of its memory limit for over 10 minutes."

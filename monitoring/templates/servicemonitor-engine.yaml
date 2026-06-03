@@ -1,6 +1,6 @@
-# ServiceMonitor scrapes the CLI container.
-# CLI container uses ttyd, which does not expose /metrics natively,
-# This monitor basic up/down via blackbox exporter pattern.
+# ServiceMonitor scrapes the engine container.
+# Engine serves static assets on port 9000 which returns 200 at /.
+# This monitors basic up/down status.
 
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
@@ -18,7 +18,7 @@ spec:
     matchNames:
       - seyoawe
   endpoints:
-    - port: http
-      path: /health
+    - port: health
+      path: /
       interval: 30s
       scrapeTimeout: 10s
