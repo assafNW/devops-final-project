@@ -61,17 +61,17 @@ variable "node_instance_type" {
 variable "node_desired_count" {
   description = "Desired number of EKS nodes"
   type = number
-  default = 1
+  default = 2
 }
 
 variable "node_min_count" {
   description = "Min number of EKS nodes"
   type = number
-  default = 1
+  default = 2
 }
 
 variable "node_max_count" {
   description = "Max number of EKS nodes"
   type = number
-  default = 2
+  default = 3
 }
