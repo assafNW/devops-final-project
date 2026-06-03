@@ -86,4 +86,4 @@
     msg:
       - "App deployed successfully"
       - "Engine API:  http://{{ ingress_url.stdout }}/api"
-      - "CLI terminal: http://{{ ingress_url.stdout }}/cli"
+      - "CLI terminal: http://{{ ingress_url.stdout }}/"
