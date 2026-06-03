@@ -36,11 +36,11 @@
 - name: Copy folders via kubectl CLI
   ansible.builtin.command: >
     kubectl cp
-    {{ playbook_dir }}/../../engine/{{ item.src }}/.
-    {{ app_namespace }}/{{ app_release_name }}-engine-0:/app/{{ item.dest }}/
+    {{ playbook_dir }}/../../engine/{{ item.src }}
+    {{ app_namespace }}/{{ app_release_name }}-engine-0:/app
   loop:
-    - { src: 'modules', dest: 'modules' }
-    - { src: 'workflows', dest: 'workflows' }
+    - { src: 'modules' }
+    - { src: 'workflows' }
 
 - name: Verify engine rollout
   command: >
