@@ -40,7 +40,7 @@ spec:
           
           env:
             - name: ENGINE_URL
-              value: "http://{{ .Release.Name }}-engine.{{ .Release.Namespace }}.svc.cluster.local"
+              value: "{{ .Release.Name }}-engine.{{ .Release.Namespace }}.svc.cluster.local"
           
           livenessProbe:
             httpGet:
