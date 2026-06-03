@@ -43,7 +43,7 @@
     --set-file dashboard\.18283\.json={{ dashboard_dest }}
     --atomic
     --timeout 10m
-    --Wait
+    --wait
   register: helm_monitoring_result
   args:
     chdir: "{{ repo_root }}"
