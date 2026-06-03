@@ -25,7 +25,7 @@ monitoring_release_name: "seyoawe-monitoring"
 
 # Helm chart paths (relative to repo root)
 app_chart_path: "k8s/helm/seyoawe"
-monitoring_chart_path: "k8s/monitoring/seyoawe-monitoring"
+monitoring_chart_path: "monitoring/"
 
 # DockerHub
 # Can be injected at run time from GitHub Actions secrets,
