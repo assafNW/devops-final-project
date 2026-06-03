@@ -40,7 +40,7 @@
     --create-namespace
     --values {{ monitoring_chart_path }}/values.yaml
     --set kube-prometheus-stack.grafana.adminPassword={{ grafana_password }}
-    --set-file dashboard\.18283\.json={{ dashboard_dest }}
+    --set-file dashboards.d18283.json={{ dashboard_dest }}
     --atomic
     --timeout 10m
     --wait

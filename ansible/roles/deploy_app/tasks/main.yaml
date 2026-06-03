@@ -18,7 +18,7 @@
     --set engine.image.tag={{ app_version }}
     --set cli.image.repository={{ cli_image_repo }}
     --set cli.image.tag={{ app_version }}
-    --timeout 5m
+    --timeout 10m
     --atomic
     --wait
 

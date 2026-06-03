@@ -10,7 +10,7 @@ kube-prometheus-stack:
       retention: "15d"
 
       # StorageSpec
-      StorageSpec:
+      storageSpec:
         volumeClaimTemplate:
           spec:
             storageClassName: gp2
@@ -57,7 +57,7 @@ kube-prometheus-stack:
         datasources:
           - name: Prometheus
             type: prometheus
-            url: http://{{ .Release.Name }}-kube-prometheus-stack-prometheus:9090
+            url: http://seyoawe-monitoring-kube-prometheus-stack-prometheus:9090
             access: proxy
             isDefault: true
 
@@ -65,7 +65,7 @@ kube-prometheus-stack:
       dashboards:
         enabled: true
         label: grafana_dashboard
-        labelValue: :"1"
+        labelValue: "1"
         searchNamespace: ALL 
 
     resources:
@@ -78,13 +78,11 @@ kube-prometheus-stack:
     
     ingress:
       enabled: true
+      ingressClassName: alb
       annotations:
-        kubernetes.io/ingress.class: "alb"
         alb.ingress.kubernetes.io/scheme: "internet-facing"
         alb.ingress.kubernetes.io/target-type: "ip"
         alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
-      hosts:
-        - grafana.seyoawe.example.com
       path: /
       pathType: Prefix
 
@@ -138,5 +136,5 @@ kube-prometheus-stack:
 # The dashboard is being downloaded via Ansible monitoring playbook,
 # and setting it via --set-file.
 dashboards:
-  18283:
+  d18283:
     json: ""

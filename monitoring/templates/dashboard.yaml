@@ -9,4 +9,4 @@ metadata:
     grafana_dashboard: "1"
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 data:
-  kubernetes-dashboard-18283.json: {{ .Values.dashboard.18283.json | toJson }}
+  kubernetes-dashboard-18283.json: {{ .Values.dashboards.d18283.json | toJson }}
