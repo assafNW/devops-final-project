@@ -39,8 +39,8 @@ spec:
               protocol: TCP 
           
           env:
-            - name: SEYOAWE_ENGINE_URL
-              value: {{ .Values.engineUrl | quote }}
+            - name: ENGINE_URL
+              value: "http://{{ .Release.Name }}-engine.{{ .Release.Namespace }}.svc.cluster.local"
           
           livenessProbe:
             httpGet:

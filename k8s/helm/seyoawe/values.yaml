@@ -48,8 +48,6 @@ cli:
       cpu: "500m"
       memory: "256Mi"
   
-  engineUrl: "http://{{ .Release.Name }}-engine.{{ .Release.Namespace }}.svc.cluster.local"
-
   healthCheck:
     path: /
     initialDelaySeconds: 10
