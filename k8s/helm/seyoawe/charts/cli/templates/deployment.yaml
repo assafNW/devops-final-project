@@ -63,13 +63,13 @@ spec:
           
           volumeMounts:
             - name: lifetimes
-              mountPath: /home/sawctl/lifetimes
+              mountPath: /home/sawectl/lifetimes
             - name: logs
-              mountPath: /home/sawctl/logs
+              mountPath: /home/sawectl/logs
             - name: workflows
-              mountPath: /home/sawctl/workflows
+              mountPath: /home/sawectl/workflows
             - name: modules
-              mountPath: /home/sawctl/modules
+              mountPath: /home/sawectl/modules
 
       volumes:
         - name: lifetimes
