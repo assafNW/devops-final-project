@@ -54,6 +54,8 @@ module "lbc" {
   environment = var.environment
   vpc_id = module.vpc.vpc_id
   cluster_name = module.eks.cluster_name
+  cluster_endpoint = module.eks.cluster_endpoint
+  cluster_ca_certificate = module.eks.cluster_ca_certificate
   oidc_provider_arn = module.eks.oidc_provider_arn
   oidc_provider_url = module.eks.oidc_provider_url
 
