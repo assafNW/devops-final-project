@@ -1,5 +1,3 @@
-# This Grafana dashboard is using dashboard 15661 from Grafana dashboards site
-
 apiVersion: v1
 kind: ConfigMap
 metadata: 
@@ -8,5 +6,10 @@ metadata:
   labels:
     grafana_dashboard: "1"
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+    # Fetch the ID from grafana.com automatically!
+    grafana_dashboard_folder: "Kubernetes"
+    download_dashboard: "15661" 
 data:
-  kubernetes-dashboard-15661.json: {{ .Values.dashboards.d15661.json | toJson }}
+  # A valid placeholder key/value pair to process the map
+  kubernetes-dashboard-15661.json: '{"gnetId":15661,"version":1}'
