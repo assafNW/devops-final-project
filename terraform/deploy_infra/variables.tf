@@ -55,7 +55,7 @@ variable "eks_cluster_version" {
 variable "node_instance_type" {
     description = "EC2 instance type for EKS nodes"
     type = string
-    default = "t3.small"  
+    default = "t3.medium"  
 }
 
 variable "node_desired_count" {
