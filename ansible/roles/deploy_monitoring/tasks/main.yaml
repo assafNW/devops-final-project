@@ -16,6 +16,21 @@
     chdir: "{{ repo_root }}"
   changed_when: true
 
+# Download grafana dashboard 15661 JSON from grafana api.
+# force: true re-fetches on every deploy so new revisions are picked up automatically.
+- name: Download Grafana dashboard 15661 JSON
+  get_url:
+    url: "{{ dashboard_url }}"
+    dest: "{{ dashboard_dest }}"
+    mode: 0644
+    force: true
+
+- name: Verify dashboard JSON was downloaded
+  stat:
+    path: "{{ dashboard_dest }}"
+  register: dashboard_file
+  failed_when: not dashboard_file.stat.exists
+
 - name: Deploy monitoring chart
   command: >
     helm upgrade --install {{ monitoring_release_name }} {{ monitoring_chart_path }}
@@ -23,6 +38,7 @@
     --create-namespace
     --values {{ monitoring_chart_path }}/values.yaml
     --set kube-prometheus-stack.grafana.adminPassword={{ grafana_password }}
+    --set-file dashboards.d15661.json={{ dashboard_dest }}
     --timeout 15m
     --atomic
     --wait

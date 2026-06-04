@@ -122,3 +122,7 @@ kube-prometheus-stack:
       nodeExporterRecording: true
       prometheus: true
       prometheusOperator: true
+
+dashboards:
+  d15661:
+    json: ""
