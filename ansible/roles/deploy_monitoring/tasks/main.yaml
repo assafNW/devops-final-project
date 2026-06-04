@@ -31,6 +31,12 @@
   register: dashboard_file
   failed_when: not dashboard_file.stat.exists
 
+- name: Automate fix for Grafana legacy datasource template query error
+  replace:
+    path: "{{ dashboard_dest }}"
+    regexp: '"query": "prometheus"'
+    replace: '"query": ""'
+
 - name: Deploy monitoring chart
   command: >
     helm upgrade --install {{ monitoring_release_name }} {{ monitoring_chart_path }}
