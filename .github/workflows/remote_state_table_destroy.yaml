@@ -43,6 +43,8 @@ jobs:
           # Target the exact DynamoDB table name from your file, allowing fallback if already gone
           terraform import aws_dynamodb_table.terraform_locks seyoawe-terraform-state-locking || echo "DynamoDB table already deleted or tracked."
 
+          terraform apply --auto-approve
+
       - name: Terraform Destroy
         working-directory: ${{ env.TF_WORKING_DIR }}
         run: terraform destroy --auto-approve
