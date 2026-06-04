@@ -35,8 +35,8 @@ jobs:
       - name: Terraform Collect Data From AWS 
         working-directory: ${{ env.TF_WORKING_DIR }}
         run: |
-          terraform import aws_s3_bucket.terraform_state group2-terraform-bucket-2025-774411 &>/dev/null
-          terraform import aws_dynamodb_table.terraform_locks group2-terraform-state-locking &>/dev/null
+          terraform import aws_s3_bucket.terraform_state group2-terraform-bucket-2025-774411
+          terraform import aws_dynamodb_table.terraform_locks group2-terraform-state-locking
           terraform apply --auto-approve
 
       - name: Terraform Destroy
