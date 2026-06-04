@@ -12,6 +12,5 @@ metadata:
     grafana_dashboard_folder: "Kubernetes"
     download_dashboard: "15661" 
 data:
- # This cleanly maps the raw JSON text directly into the config file
   kubernetes-dashboard-15661.json: |-
     {{- .Values.dashboards.d15661.json | nindent 4 }}
