@@ -12,7 +12,7 @@ terraform {
       version = "~> 5.5"
     }
     kubernetes = {
-      source = "hashicorp/kubernetes"
+      source  = "hashicorp/kubernetes"
       version = "~> 2.0"
     }
     helm = {
@@ -27,32 +27,35 @@ provider "aws" {
 
   default_tags {
     tags = {
-      Project = var.project_name
+      Project     = var.project_name
       Environment = var.environment
-      ManagedBy = "Terraform"
+      ManagedBy   = "Terraform"
     }
   }
 }
 
-# Kubernetes provider — uses the EKS cluster output to authenticate
-data "aws_eks_cluster" "main" {
-  name = module.eks.cluster_name
-}
-
-data "aws_eks_cluster_auth" "main" {
-  name = module.eks.cluster_name
-}
-
+# Kubernetes and Helm
 provider "kubernetes" {
-  host                   = data.aws_eks_cluster.main.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.main.certificate_authority[0].data)
-  token                  = data.aws_eks_cluster_auth.main.token
+  host = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+  
+  # Using exec to authenticate
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+    command = "aws"
+  }
 }
 
 provider "helm" {
   kubernetes {
-    host                   = data.aws_eks_cluster.main.endpoint
-    cluster_ca_certificate = base64decode(data.aws_eks_cluster.main.certificate_authority[0].data)
-    token                  = data.aws_eks_cluster_auth.main.token
+    host = module.eks.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+    
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+      command = "aws"
+    }
   }
 }

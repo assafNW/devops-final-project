@@ -5,8 +5,7 @@ on:
 
 env:
   AWS_REGION: us-east-2
-  TF_INFRA_WORKING_DIR: terraform/deploy_infra
-  TF_HELM_WORKING_DIR: terraform/helm
+  TF_WORKING_DIR: terraform/deploy_infra
   CLUSTER_NAME: seyoawe-prod
 
 jobs:
@@ -47,25 +46,18 @@ jobs:
 
       - name: Helm uninstall app and monitoring
         run: |
+          echo "Uninstalling application and monitoring charts..."
           helm uninstall seyoawe -n seyoawe --ignore-not-found || true
           helm uninstall seyoawe-monitoring -n monitoring --ignore-not-found || true
-          helm uninstall aws-load-balancer-controller -n kube-system --ignore-not-found || true
-          echo "Waiting for LBC to clean up AWS resources..."
+          
+          echo "Waiting 2 minutes for Terraform-managed LBC to clean up the AWS ALBs..."
           sleep 120
         continue-on-error: true
 
-      - name: Terraform Init - Helm
-        working-directory: ${{ env.TF_HELM_WORKING_DIR }}
-        run: terraform init
-      
-      - name: Terraform destroy helm
-        working-directory: ${{ env.TF_HELM_WORKING_DIR }}
-        run: terraform destroy --auto-approve
-
-      - name: Terraform Init - Infrastructure  
-        working-directory: ${{ env.TF_INFRA_WORKING_DIR }}
+      - name: Terraform Init  
+        working-directory: ${{ env.TF_WORKING_DIR }}
         run: terraform init
 
-      - name: Terraform destroy infrastructure
-        working-directory: ${{ env.TF_INFRA_WORKING_DIR }}
+      - name: Terraform Destroy 
+        working-directory: ${{ env.TF_WORKING_DIR }}
         run: terraform destroy --auto-approve
