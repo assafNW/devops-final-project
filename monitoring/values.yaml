@@ -136,5 +136,5 @@ kube-prometheus-stack:
 # The dashboard is being downloaded via Ansible monitoring playbook,
 # and setting it via --set-file.
 dashboards:
-  d18283:
+  d15661:
     json: ""

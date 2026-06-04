@@ -1,12 +1,12 @@
-# This Grafana dashboard is using dashboard 18283 from Grafana dashboards site
+# This Grafana dashboard is using dashboard 15661 from Grafana dashboards site
 
 apiVersion: v1
 kind: ConfigMap
 metadata: 
-  name: {{ .Release.Name }}-dashboard-18283
+  name: {{ .Release.Name }}-dashboard-15661
   namespace: {{ .Release.Namespace }}
   labels:
     grafana_dashboard: "1"
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 data:
-  kubernetes-dashboard-18283.json: {{ .Values.dashboards.d18283.json | toJson }}
+  kubernetes-dashboard-15661.json: {{ .Values.dashboards.d15661.json | toJson }}

@@ -53,8 +53,8 @@ cluster_name: "{{ lookup('env', 'TF_OUTPUT_CLUSTER_NAME') }}"
 grafana_password: "{{ lookup('env', 'GRAFANA_PASSWORD') }}"
 
 # Dashboard
-dashboard_url: "https://grafana.com/api/dashboards/18283/revisions/latest/download"
-dashboard_dest: "/tmp/dashboard-18283.json"
+dashboard_url: "https://grafana.com/api/dashboards/15661/revisions/latest/download"
+dashboard_dest: "/tmp/dashboard-15661.json"
 
 # EFS
 # Injected from Terraform output by the GitHub Actions workflow

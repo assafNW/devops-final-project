@@ -13,14 +13,14 @@ spec:
       rules:
         # Engine pod is down
         - alert: SeyoaweEngineDown
-          expr: kube_deployment_status_replicas_ready{deployment="seyoawe-engine", namespace="seyoawe"} < 1
+          expr: kube_statefulset_status_replicas_ready{statefulset="seyoawe-engine", namespace="seyoawe"} < 1
           for: 2m
           labels: 
             severity: critical
             component: engine
           annotations:
             summary: "SeyoAWE engine has no ready replicas"
-            description: "Deployment seyoawe-engine has had 0 ready replicas for more than 2 minutes."
+            description: "StatefulSet seyoawe-engine has had 0 ready replicas for more than 2 minutes."
 
         # Engine pod is restarting repeatedly
         - alert: SeyoaweEngineHighNumberOfRestarts
@@ -36,8 +36,8 @@ spec:
         # PVC storage is running low
         - alert: SeyoaweEngineStorageLow
           expr: |
-            (kubelet_volume_stats_available_bytes{namespace="seyoawe", persistentvolumeclaim=~ "seyoawe-engine-.*"} 
-            / kubelet_volume_stats_capacity_bytes{namespace="seyoawe", persistentvolumeclaim=~ "seyoawe-engine-.*"}) < 0.15
+            (kubelet_volume_stats_available_bytes{namespace="seyoawe", persistentvolumeclaim=~ "seyoawe-.*-pvc"} 
+            / kubelet_volume_stats_capacity_bytes{namespace="seyoawe", persistentvolumeclaim=~ "seyoawe-.*-pvc"}) < 0.15
           for: 5m
           labels: 
             severity: warning
@@ -50,7 +50,7 @@ spec:
         - alert: SeyoaweEngineHighCpuUsage
           expr: |
             rate(container_cpu_usage_seconds_total{namespace="seyoawe", pod=~ "seyoawe-engine-.*", container="engine"}[5m]) 
-            / on(pod) kube_pod_container_resource_limits{namespace="seyoawe", resource="cpu"} > 0.85
+            / on(pod, container) kube_pod_container_resource_limits{namespace="seyoawe", resource="cpu"} > 0.85
           for: 10m
           labels: 
             severity: warning
@@ -63,7 +63,7 @@ spec:
         - alert: SeyoaweEngineHighMemoryUsage
           expr: |
             container_memory_working_set_bytes{namespace="seyoawe", pod=~ "seyoawe-engine-.*", container="engine"}
-            / on(pod) kube_pod_container_resource_limits{namespace="seyoawe", resource="memory"} > 0.85
+            / on(pod, container) kube_pod_container_resource_limits{namespace="seyoawe", resource="memory"} > 0.85
           for: 10m
           labels: 
             severity: warning
@@ -100,8 +100,8 @@ spec:
         # PVC storage is running low
         - alert: SeyoaweCliStorageLow
           expr: |
-            (kubelet_volume_stats_available_bytes{namespace="seyoawe", persistentvolumeclaim=~ "seyoawe-cli-.*"} 
-            / kubelet_volume_stats_capacity_bytes{namespace="seyoawe", persistentvolumeclaim=~ "seyoawe-cli-.*"}) < 0.15
+            (kubelet_volume_stats_available_bytes{namespace="seyoawe", persistentvolumeclaim=~ "seyoawe-.*-pvc"} 
+            / kubelet_volume_stats_capacity_bytes{namespace="seyoawe", persistentvolumeclaim=~ "seyoawe-.*-pvc"}) < 0.15
           for: 5m
           labels: 
             severity: warning
@@ -114,7 +114,7 @@ spec:
         - alert: SeyoaweCliHighCpuUsage
           expr: |
             rate(container_cpu_usage_seconds_total{namespace="seyoawe", pod=~ "seyoawe-cli-.*", container="cli"}[5m]) 
-            / on(pod) kube_pod_container_resource_limits{namespace="seyoawe", resource="cpu"} > 0.85
+            / on(pod, container) kube_pod_container_resource_limits{namespace="seyoawe", resource="cpu"} > 0.85
           for: 10m
           labels: 
             severity: warning
@@ -127,7 +127,7 @@ spec:
         - alert: SeyoaweCliHighMemoryUsage
           expr: |
             container_memory_working_set_bytes{namespace="seyoawe", pod=~ "seyoawe-cli-.*", container="cli"}
-            / on(pod) kube_pod_container_resource_limits{namespace="seyoawe", resource="memory"} > 0.85
+            / on(pod, container) kube_pod_container_resource_limits{namespace="seyoawe", resource="memory"} > 0.85
           for: 10m
           labels: 
             severity: warning
