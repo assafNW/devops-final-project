@@ -108,6 +108,16 @@ jobs:
           echo "grafana_url=http://$(kubectl get ingress -n monitoring \
             -o jsonpath='{.items[0].status.loadBalancer.ingress[0].hostname}')/grafana" >> $GITHUB_OUTPUT
         id: deploy_monitoring
+      
+      - name: Print deployment URLs
+        run: |
+          echo "=================================================="
+          echo "Deployment Summary"
+          echo "=================================================="
+          echo "Engine API:    http://$(cat /tmp/ingress_url.txt)/api"
+          echo "CLI Terminal:  http://$(cat /tmp/ingress_url.txt)/"
+          echo "Grafana:       http://$(kubectl get ingress -n monitoring -o jsonpath='{.items[0].status.loadBalancer.ingress[0].hostname}')"
+          echo "=================================================="
 
   # SUCCESS - if all tests passed, do tag version increase and push images to Dockerhub
   publish:
