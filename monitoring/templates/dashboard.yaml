@@ -1,3 +1,4 @@
+# This Grafana dashboard fetches ID 15661 directly from Grafana dashboards site via sidecar
 apiVersion: v1
 kind: ConfigMap
 metadata: 

@@ -131,10 +131,3 @@ kube-prometheus-stack:
       nodeExporterRecording: true
       prometheus: true
       prometheusOperator: true
-
-# Dashboard JSON payloads
-# The dashboard is being downloaded via Ansible monitoring playbook,
-# and setting it via --set-file.
-dashboards:
-  d15661:
-    json: ""
