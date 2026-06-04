@@ -31,11 +31,23 @@
   register: dashboard_file
   failed_when: not dashboard_file.stat.exists
 
-- name: Automate fix for Grafana legacy datasource template query error
+- name: Strip hardcoded VictoriaMetrics template variables from dashboard targets
   replace:
     path: "{{ dashboard_dest }}"
-    regexp: '"query": "prometheus"'
-    replace: '"query": ""'
+    regexp: '"uid": "\${DS__VICTORIAMETRICS-PROD-ALL}"'
+    replace: '"uid": ""'
+
+- name: Strip hardcoded fallback prometheus template UIDs
+  replace:
+    path: "{{ dashboard_dest }}"
+    regexp: '"uid": "WAYOn0FGz"'
+    replace: '"uid": ""'
+
+- name: Clean top-level template variable datasource references
+  replace:
+    path: "{{ dashboard_dest }}"
+    regexp: '"datasource": "\${DS__VICTORIAMETRICS-PROD-ALL}"'
+    replace: '"datasource": null'
 
 - name: Deploy monitoring chart
   command: >
