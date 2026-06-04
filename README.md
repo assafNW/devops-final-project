@@ -417,16 +417,15 @@ The project uses GitHub Actions for automation.
 
 The CI workflow performs:
 
+#### Engine/CLI Job
+
 - Python dependency installation
-- linting
 - unit tests
 - Docker image builds
 - artifact uploads
 - Allure result generation
 
-## E2E Pipeline
-
-The E2E workflow:
+#### E2E Job
 
 - waits for successful unit tests
 - deploys runtime containers
@@ -434,6 +433,8 @@ The E2E workflow:
 - validates CLI interaction
 - validates workflow execution
 - validates integration behavior
+
+##### * Enable Github Pages for Allure Reports
 
 ## CD Pipeline
 
@@ -444,6 +445,19 @@ The CD workflow:
 - deploys Kubernetes resources
 - deploys monitoring stack
 - validates rollout status
+
+## Secrets - Configure to Run Workflows
+
+ Configure these secrets on *Secrets and Variables* -> *Actions* -> *Repository secrets*:
+
+| Secret | Used by |
+|---|---|
+| `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | Terraform + Ansible |
+| `DOCKERHUB_USER`, `DOCKERHUB_TOKEN` | CI image push |
+| `GRAFANA_PASSWORD` | Monitoring deploy |
+| `JIRA_BASE_URL`, `JIRA_USER_EMAIL`, `JIRA_API_TOKEN`, `JIRA_PROJECT_KEY` | CI failure |
+| `SMTP_SERVER`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `NOTIFY_EMAIL` | CI failure email |
+
 
 ---
 
