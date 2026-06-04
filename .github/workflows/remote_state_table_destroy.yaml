@@ -35,9 +35,13 @@ jobs:
       - name: Terraform Collect Data From AWS 
         working-directory: ${{ env.TF_WORKING_DIR }}
         run: |
-          terraform import aws_s3_bucket.terraform_state group2-terraform-bucket-2025-774411
-          terraform import aws_dynamodb_table.terraform_locks group2-terraform-state-locking
-          terraform apply --auto-approve
+          echo "Syncing S3 Bucket state..."
+          # Target the exact resource and name from your file, allowing fallback if already gone
+          terraform import aws_s3_bucket.terraform_state seyoawe-terraform-bucket-332211 || echo "S3 bucket already deleted or tracked."
+          
+          echo "Syncing DynamoDB Table state..."
+          # Target the exact DynamoDB table name from your file, allowing fallback if already gone
+          terraform import aws_dynamodb_table.terraform_locks seyoawe-terraform-state-locking || echo "DynamoDB table already deleted or tracked."
 
       - name: Terraform Destroy
         working-directory: ${{ env.TF_WORKING_DIR }}
