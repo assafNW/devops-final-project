@@ -51,15 +51,15 @@ kube-prometheus-stack:
       storageClassName: gp2
       size: 5Gi
 
-    datasources:
-      datasources.yaml:
-        apiVersion: 1
-        datasources:
-          - name: Prometheus
-            type: prometheus
-            url: http://seyoawe-monitoring-kube-pr-prometheus:9090
-            access: proxy
-            isDefault: true
+    # datasources:
+    #   datasources.yaml:
+    #     apiVersion: 1
+    #     datasources:
+    #       - name: Prometheus
+    #         type: prometheus
+    #         url: http://seyoawe-monitoring-kube-pr-prometheus:9090
+    #         access: proxy
+    #         isDefault: true
 
     sidecar:
       dashboards:
