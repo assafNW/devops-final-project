@@ -57,7 +57,7 @@ kube-prometheus-stack:
         datasources:
           - name: Prometheus
             type: prometheus
-            url: http://seyoawe-monitoring-kube-prometheus-stack-prometheus:9090
+            url: http://seyoawe-monitoring-kube-pr-prometheus:9090
             access: proxy
             isDefault: true
 
