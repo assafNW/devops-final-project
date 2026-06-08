@@ -141,7 +141,7 @@
     </mxGraphModel>
   </diagram>
   <diagram id="0wgi5iBTyN6Xl3gtqztk" name="Unified - CI/CD">
-    <mxGraphModel dx="7674" dy="1308" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="3223" dy="480" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -374,7 +374,7 @@
         <mxCell id="mwqqucwBj3akzC4dsTRV-3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="" vertex="1">
           <mxGeometry height="60" width="260" x="1358" y="2241" as="geometry" />
         </mxCell>
-        <mxCell id="mwqqucwBj3akzC4dsTRV-4" parent="1" style="text;strokeColor=none;fillColor=none;html=1;fontSize=24;fontStyle=1;verticalAlign=middle;align=center;" value="Build &amp;amp; Run&amp;nbsp;&lt;div&gt;Docker Image&lt;/div&gt;" vertex="1">
+        <mxCell id="mwqqucwBj3akzC4dsTRV-4" parent="1" style="text;strokeColor=none;fillColor=none;html=1;fontSize=24;fontStyle=1;verticalAlign=middle;align=center;" value="Build &amp;amp; Run&amp;nbsp;&lt;div&gt;Docker Images&lt;/div&gt;" vertex="1">
           <mxGeometry height="40" width="100" x="1438" y="2251" as="geometry" />
         </mxCell>
         <mxCell id="mwqqucwBj3akzC4dsTRV-6" parent="1" style="text;strokeColor=none;fillColor=none;html=1;fontSize=24;fontStyle=1;verticalAlign=middle;align=center;" value="Integration &amp;amp; E2E Testing" vertex="1">
