@@ -61,7 +61,7 @@ Shared Amazon EFS Storage
 
 ![Cloud Architecture](./docs/architecture/Cloud-Architecture.jpg)
 
-## Unified CI-CD Architecture
+## CI-CD Architecture
 
 ![Unified CI-CD Architecture](./docs/architecture/Unified-CI-CD.jpg)
 
