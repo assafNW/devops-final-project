@@ -26,7 +26,6 @@ RUN curl -fsSL https://github.com/tsl0922/ttyd/releases/download/1.7.7/ttyd.x86_
     -o /usr/local/bin/ttyd \
     && chmod +x /usr/local/bin/ttyd
 
-
 # Create a system group (for services) called sawectl.
 RUN groupadd -r -g 10001 sawectl
 # Create a new system user          - sawectl (for services, not login) 
@@ -43,6 +42,10 @@ COPY ./cli/binaries/linux/sawectl /usr/local/bin/sawectl
 RUN mkdir -p /home/sawectl/modules /home/sawectl/workflows
 
 VOLUME [ "/home/sawectl/modules", "/home/sawectl/workflows" ]
+
+# Set the `ENGINE_URL` environment variable for the CLI container using
+# `docker run ... -e ENGINE_URL="..." ...` to simplify the execution of SeyoAWE workflows.
+# ENV ENGINE_URL=""
 
 # Granting executable permissions for cli's binary file
 RUN chmod +x ./usr/local/bin/sawectl

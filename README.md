@@ -61,7 +61,7 @@ Shared Amazon EFS Storage
 
 ![Cloud Architecture](./docs/architecture/Cloud-Architecture.jpg)
 
-## Cloud Architecture
+## Unified CI-CD Architecture
 
 ![Unified CI-CD Architecture](./docs/architecture/Unified-CI-CD.jpg)
 
@@ -406,6 +406,8 @@ docker build \
   -f docker/cli/Dockerfile \
   -t seyoawe-cli:latest .
 ```
+
+** Set the `ENGINE_URL` environment variable for the CLI container using `docker run ... -e ENGINE_URL="..." ...` or via the `env` section of the CLI Helm chart (already defined for Kubernetes deployments) to simplify the execution of SeyoAWE workflows.
 
 ---
 
